@@ -1,0 +1,163 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { Heart, ShoppingBag, Star, Eye, Check } from 'lucide-react';
+
+export default function ProductCard({ product, onQuickView }) {
+  const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const [isAdded, setIsAdded] = useState(false);
+
+  const isFavorited = isInWishlist(product.id);
+  const discountPercent = Math.round(product.discountPercentage || 0);
+  const originalPrice = discountPercent > 0 
+    ? (product.price / (1 - discountPercent / 100)).toFixed(2)
+    : null;
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, 1);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 1500);
+  };
+
+  const handleWishlistClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+  };
+
+  const handleQuickViewClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onQuickView?.(product);
+  };
+
+  return (
+    <div className="group relative rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/10 flex flex-col overflow-hidden backdrop-blur-sm">
+      
+      {/* Image Thumbnail Container */}
+      <div className="relative aspect-square w-full overflow-hidden bg-slate-950/80">
+        <Link to={`/products/${product.id}`} className="block w-full h-full">
+          <img
+            src={product.thumbnail || product.images?.[0]}
+            alt={product.title}
+            className="w-full h-full object-cover object-center group-hover:scale-108 transition-transform duration-500"
+            loading="lazy"
+          />
+        </Link>
+
+        {/* Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+          {discountPercent > 0 && (
+            <span className="px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider bg-rose-500/90 text-white rounded-lg backdrop-blur-md shadow-md shadow-rose-500/30">
+              -{discountPercent}%
+            </span>
+          )}
+          {product.stock && product.stock <= 5 && (
+            <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-amber-500/90 text-slate-950 rounded-lg backdrop-blur-md">
+              Low Stock
+            </span>
+          )}
+        </div>
+
+        {/* Action Buttons Overlay */}
+        <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
+          {/* Wishlist Button */}
+          <button
+            onClick={handleWishlistClick}
+            className={`p-2 rounded-xl backdrop-blur-md transition-all cursor-pointer ${
+              isFavorited
+                ? 'bg-rose-500/90 text-white shadow-lg shadow-rose-500/30'
+                : 'bg-slate-900/70 text-slate-300 hover:text-white hover:bg-slate-850 border border-slate-700/50'
+            }`}
+            title={isFavorited ? 'Remove from wishlist' : 'Save to wishlist'}
+          >
+            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
+          </button>
+
+          {/* Quick View Button */}
+          <button
+            onClick={handleQuickViewClick}
+            className="p-2 rounded-xl bg-slate-900/70 hover:bg-slate-800 text-slate-300 hover:text-white backdrop-blur-md border border-slate-700/50 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"
+            title="Quick preview"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Quick Add Button on Hover */}
+        <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
+          <button
+            onClick={handleAddToCart}
+            className="w-full py-2.5 px-3 rounded-xl bg-indigo-600/95 hover:bg-indigo-500 text-white text-xs font-semibold backdrop-blur-md shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+          >
+            {isAdded ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-300" /> Added to Bag
+              </>
+            ) : (
+              <>
+                <ShoppingBag className="w-4 h-4" /> Quick Add
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Card Details */}
+      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+        <div>
+          {/* Category & Rating */}
+          <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+            <span className="uppercase tracking-wider text-[10px] font-semibold text-indigo-400">
+              {product.category || 'Collection'}
+            </span>
+            <div className="flex items-center gap-1 text-amber-400">
+              <Star className="w-3.5 h-3.5 fill-current" />
+              <span className="font-semibold text-slate-200 text-xs">
+                {product.rating ? Number(product.rating).toFixed(1) : '4.8'}
+              </span>
+            </div>
+          </div>
+
+          {/* Product Title */}
+          <Link
+            to={`/products/${product.id}`}
+            className="text-sm font-semibold text-white line-clamp-1 group-hover:text-indigo-300 transition-colors"
+          >
+            {product.title}
+          </Link>
+
+          {/* Short description */}
+          <p className="text-xs text-slate-400 line-clamp-2 mt-1 leading-relaxed">
+            {product.description}
+          </p>
+        </div>
+
+        {/* Price & Action */}
+        <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+          <div className="flex items-baseline gap-2">
+            <span className="text-lg font-bold text-white font-mono">
+              ${Number(product.price).toFixed(2)}
+            </span>
+            {originalPrice && (
+              <span className="text-xs text-slate-500 line-through font-mono">
+                ${originalPrice}
+              </span>
+            )}
+          </div>
+
+          <Link
+            to={`/products/${product.id}`}
+            className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
+          >
+            Details →
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
