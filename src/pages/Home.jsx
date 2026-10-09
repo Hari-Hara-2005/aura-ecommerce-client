@@ -21,7 +21,6 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('all');
   const [quickViewProduct, setQuickViewProduct] = useState(null);
 
-  // Countdown timer for Flash Sale
   const [timeLeft, setTimeLeft] = useState({ hours: 14, minutes: 32, seconds: 48 });
 
   useEffect(() => {
@@ -87,15 +86,12 @@ export default function Home() {
 
   return (
     <div className="space-y-24">
-      {/* Hero Section */}
       <section className="relative overflow-hidden pt-10 sm:pt-16 pb-20">
-        {/* Ambient Gradient Glows */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-tr from-indigo-600/30 via-purple-600/20 to-pink-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
-            {/* Hero Copy */}
             <div className="lg:col-span-7 space-y-8 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold backdrop-blur-md">
                 <Sparkles className="w-4 h-4 text-indigo-400" />
@@ -128,7 +124,6 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* Stat Highlights */}
               <div className="grid grid-cols-3 gap-6 pt-8 border-t border-slate-800/80 max-w-md mx-auto lg:mx-0">
                 <div>
                   <div className="text-2xl font-bold text-white font-mono">18k+</div>
@@ -145,7 +140,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Hero Visual Card */}
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-md rounded-3xl overflow-hidden bg-slate-900/80 border border-slate-800 p-3 shadow-2xl backdrop-blur-xl">
                 <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-slate-950">
@@ -156,7 +150,6 @@ export default function Home() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
                   
-                  {/* Floating product chip */}
                   <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 backdrop-blur-xl shadow-2xl">
                     <div className="flex items-center justify-between">
                       <div>
@@ -182,7 +175,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Flash Sale Banner with Countdown */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl bg-gradient-to-r from-indigo-950 via-purple-950 to-slate-900 border border-indigo-500/30 p-8 sm:p-12 relative overflow-hidden shadow-2xl">
           <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
@@ -201,7 +193,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Countdown Stepper */}
             <div className="flex items-center gap-3 shrink-0">
               <div className="text-center p-3 rounded-2xl bg-slate-900/80 border border-slate-700 min-w-16">
                 <span className="block text-2xl sm:text-3xl font-extrabold text-white font-mono">
@@ -228,7 +219,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Categories */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
@@ -275,7 +265,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Products Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
@@ -287,7 +276,6 @@ export default function Home() {
             </h2>
           </div>
 
-          {/* Category Tabs */}
           <div className="flex flex-wrap gap-2">
             {[
               { id: 'all', label: 'All Items' },
@@ -333,7 +321,6 @@ export default function Home() {
         )}
       </section>
 
-      {/* Quick View Modal */}
       {quickViewProduct && (
         <QuickViewModal
           product={quickViewProduct}

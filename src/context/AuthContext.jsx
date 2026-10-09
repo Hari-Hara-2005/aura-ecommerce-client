@@ -6,7 +6,6 @@ const AuthContext = createContext(null);
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const isClerkValid = CLERK_PUBLISHABLE_KEY && CLERK_PUBLISHABLE_KEY.trim() !== '' && (CLERK_PUBLISHABLE_KEY.startsWith('pk_test_') || CLERK_PUBLISHABLE_KEY.startsWith('pk_live_'));
 
-// Internal provider for fallback/demo auth when Clerk Key isn't provided yet
 function FallbackAuthProvider({ children }) {
   const [demoUser, setDemoUser] = useState(() => {
     try {
@@ -46,7 +45,6 @@ function FallbackAuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Internal provider when Clerk is enabled
 function ClerkBridgeProvider({ children }) {
   const { user, isSignedIn, isLoaded } = useUser();
   const { signOut } = useClerk();

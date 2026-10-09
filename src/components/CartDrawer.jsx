@@ -58,10 +58,8 @@ export default function CartDrawer() {
     }
   };
 
-
-  return (
+return (
     <div className="fixed inset-0 z-50 overflow-hidden animate-fade-in">
-      {/* Backdrop */}
       <div
         onClick={() => setIsCartOpen(false)}
         className="absolute inset-0 bg-slate-950/70 backdrop-blur-md transition-opacity"
@@ -70,7 +68,6 @@ export default function CartDrawer() {
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
         <div className="w-screen max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl flex flex-col justify-between">
           
-          {/* Header */}
           <div className="p-6 border-b border-slate-800 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
@@ -89,7 +86,6 @@ export default function CartDrawer() {
             </button>
           </div>
 
-          {/* Free Shipping Tracker */}
           <div className="px-6 py-3 bg-slate-950/60 border-b border-slate-800/80">
             <div className="flex items-center justify-between text-xs mb-1.5">
               <span className="text-slate-300 font-medium">
@@ -111,7 +107,6 @@ export default function CartDrawer() {
             </div>
           </div>
 
-          {/* Cart Item List */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {items.length === 0 ? (
               <div className="text-center py-16 space-y-4">
@@ -204,11 +199,9 @@ export default function CartDrawer() {
             )}
           </div>
 
-          {/* Footer & Checkout Area */}
           {items.length > 0 && (
             <div className="p-6 border-t border-slate-800 bg-slate-950/70 space-y-4">
               
-              {/* Promo Code Form */}
               {appliedCoupon ? (
                 <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between text-xs">
                   <span className="text-emerald-300 font-medium flex items-center gap-1.5">
@@ -239,7 +232,6 @@ export default function CartDrawer() {
                 </form>
               )}
 
-              {/* Price Breakdown */}
               <div className="space-y-1.5 text-xs text-slate-400">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
@@ -263,7 +255,6 @@ export default function CartDrawer() {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="space-y-2 pt-1">
                 <button
                   onClick={handleProceedToCheckout}

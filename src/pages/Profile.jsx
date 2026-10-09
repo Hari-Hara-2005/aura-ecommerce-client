@@ -48,7 +48,6 @@ export default function Profile() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
-      {/* Profile Header */}
       <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6 backdrop-blur-md shadow-2xl">
         <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
           <img
@@ -84,7 +83,6 @@ export default function Profile() {
         </button>
       </div>
 
-      {/* Tabs */}
       <div className="flex border-b border-slate-800 gap-6">
         <button
           onClick={() => setActiveTab('orders')}
@@ -108,7 +106,6 @@ export default function Profile() {
         </button>
       </div>
 
-      {/* Tab 1: Orders */}
       {activeTab === 'orders' && (
         <div className="space-y-4">
           {orders.length === 0 ? (
@@ -161,7 +158,6 @@ export default function Profile() {
                   </div>
                 </div>
 
-                {/* Items in this order */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {ord.items?.map((item, idx) => (
                     <div key={idx} className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 text-xs">
@@ -183,7 +179,6 @@ export default function Profile() {
         </div>
       )}
 
-      {/* Tab 2: Security & Gateway Info */}
       {activeTab === 'security' && (
         <div className="p-6 rounded-3xl bg-slate-900/40 border border-slate-800 max-w-xl space-y-4 text-xs text-slate-300">
           <h3 className="text-base font-bold text-white">Payment & Authentication Status</h3>

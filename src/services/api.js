@@ -1,14 +1,5 @@
 import axios from 'axios';
 
-/**
- * AXIOS API CLIENT CONFIGURATION
- * -------------------------------------------------------------------
- * This client is pre-configured with https://dummyjson.com as dummy API.
- * When you are ready to connect your original backend:
- * 1. Change VITE_API_BASE_URL in your .env file (e.g., http://localhost:5000/api)
- * 2. The apiClient and endpoints below can be adjusted or replaced easily!
- */
-
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://dummyjson.com';
 
 export const apiClient = axios.create({
@@ -19,7 +10,6 @@ export const apiClient = axios.create({
   },
 });
 
-// Request Interceptor: Attach Auth tokens (e.g. from Clerk or custom JWT)
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('aura_auth_token');
@@ -31,7 +21,6 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Uniform error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -40,7 +29,6 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Fallback high-aesthetic mock catalog in case external DummyJSON has network or CORS issues
 export const FALLBACK_PRODUCTS = [
   {
     id: 101,
@@ -197,9 +185,7 @@ export const FALLBACK_PRODUCTS = [
   }
 ];
 
-// Product Service API Calls
 export const productService = {
-  // Get all products with optional filters
   async getProducts({ limit = 30, skip = 0, category, search, sortBy, order } = {}) {
     try {
       if (search && search.trim() !== '') {
@@ -219,7 +205,6 @@ export const productService = {
       return response.data;
     } catch (error) {
       console.warn('[productService.getProducts] Fallback to internal products due to network/API status:', error.message);
-      // Filter fallback
       let results = [...FALLBACK_PRODUCTS];
       if (category && category !== 'all') {
         results = results.filter(p => p.category.toLowerCase() === category.toLowerCase());
@@ -237,7 +222,6 @@ export const productService = {
     }
   },
 
-  // Get single product by ID
   async getProductById(id) {
     try {
       const response = await apiClient.get(`/products/${id}`);
@@ -249,11 +233,9 @@ export const productService = {
     }
   },
 
-  // Get categories
   async getCategories() {
     try {
       const response = await apiClient.get('/products/categories');
-      // DummyJSON returns an array of strings or objects {slug, name, url}
       const raw = response.data;
       if (Array.isArray(raw)) {
         return raw.map(cat => (typeof cat === 'object' ? cat.slug || cat.name : cat));
@@ -266,16 +248,13 @@ export const productService = {
   },
 };
 
-// Order & Payment Service API (Connected to Express + Neon PostgreSQL Backend)
 export const orderService = {
-  // Create an order in backend
   async createOrder(orderPayload) {
     try {
       console.log('[orderService.createOrder] Sending order to backend API:', orderPayload);
       const response = await apiClient.post('/orders', orderPayload);
       const createdOrder = response.data?.order || response.data;
       
-      // Also cache locally in browser
       const savedOrders = JSON.parse(localStorage.getItem('aura_orders') || '[]');
       savedOrders.unshift(createdOrder);
       localStorage.setItem('aura_orders', JSON.stringify(savedOrders));
@@ -299,7 +278,6 @@ export const orderService = {
     }
   },
 
-  // Verify payment after Razorpay checkout
   async verifyPayment(paymentDetails) {
     try {
       const res = await apiClient.post('/payment/verify', paymentDetails);
@@ -310,7 +288,6 @@ export const orderService = {
     }
   },
 
-  // Get orders for current user
   async getUserOrders(userId) {
     try {
       if (userId) {
@@ -328,14 +305,12 @@ export const orderService = {
   }
 };
 
-// Coupon Service (Connected to backend)
 export const couponService = {
   async validateCoupon(code, subtotal) {
     try {
       const res = await apiClient.post('/coupons/validate', { code, subtotal });
       return res.data;
     } catch (error) {
-      // Local fallback for offline mode
       const cleanCode = code?.toUpperCase().trim();
       if (cleanCode === 'AURA10') return { valid: true, discountAmount: subtotal * 0.1, code: 'AURA10', message: '10% OFF Applied' };
       if (cleanCode === 'LUXE20' && subtotal >= 200) return { valid: true, discountAmount: subtotal * 0.2, code: 'LUXE20', message: '20% OFF Applied' };
@@ -345,7 +320,6 @@ export const couponService = {
   }
 };
 
-// User Sync Service
 export const userService = {
   async syncUser(userData) {
     try {

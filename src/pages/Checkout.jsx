@@ -25,7 +25,6 @@ export default function Checkout() {
   const { items, subtotal, discountAmount, shipping, tax, total, clearCart, appliedCoupon, showToast } = useCart();
   const { user, isSignedIn, loginDemo } = useAuthUser();
 
-  // Form Fields
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
@@ -38,7 +37,6 @@ export default function Checkout() {
     country: 'India',
   });
 
-  // Sync with Clerk user if user becomes loaded / signed in
   React.useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -71,7 +69,6 @@ export default function Checkout() {
     );
   }
 
-  // AUTHENTICATION GATE: User must sign in / sign up before completing checkout
   if (!isSignedIn) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 space-y-8 animate-fade-in">
@@ -90,7 +87,6 @@ export default function Checkout() {
           </p>
         </div>
 
-        {/* Preserved Cart Summary Card */}
         <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-5 backdrop-blur-md">
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
@@ -121,7 +117,6 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* Action Buttons: Sign In / Sign Up */}
         <div className="p-8 rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border border-indigo-500/30 space-y-6 shadow-2xl text-center">
           <div className="space-y-1">
             <h3 className="text-lg font-bold text-white">Ready to finalize your purchase?</h3>
@@ -165,7 +160,6 @@ export default function Checkout() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Complete Order via Axios dummy API & navigate
   const completeOrder = async (paymentResult) => {
     try {
       const orderPayload = {
@@ -191,7 +185,6 @@ export default function Checkout() {
         },
       };
 
-      // Calls Axios API (dummy endpoint with fallback)
       const createdOrder = await orderService.createOrder(orderPayload);
       await orderService.verifyPayment(paymentResult);
 
@@ -211,7 +204,6 @@ export default function Checkout() {
     setIsProcessing(true);
 
     if (paymentMethod === 'cod') {
-      // Direct Cash on Delivery
       await completeOrder({
         razorpay_payment_id: 'cod_pay_' + Date.now(),
         razorpay_order_id: 'cod_order_' + Date.now(),
@@ -220,17 +212,13 @@ export default function Checkout() {
       return;
     }
 
-    // Razorpay Integration
     const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
-    // If key is a placeholder or not provided, launch the realistic Razorpay simulator modal
-    // so developer/user can test with 0 obstacles!
     if (!razorpayKey || razorpayKey === 'rzp_test_placeholder') {
       setShowSimulatorModal(true);
       return;
     }
 
-    // Real Razorpay SDK trigger
     initiateRazorpayPayment({
       amount: total,
       currency: 'INR',
@@ -245,7 +233,6 @@ export default function Checkout() {
       },
       onFailure: (err) => {
         console.warn('Razorpay checkout failed, opening fallback simulation modal:', err);
-        // Seamless fallback to test simulation modal if live key was rejected
         setShowSimulatorModal(true);
       },
       onDismiss: () => {
@@ -255,7 +242,6 @@ export default function Checkout() {
     });
   };
 
-  // Handler for Test Simulator Modal
   const handleSimulatePaymentSuccess = async () => {
     setShowSimulatorModal(false);
     setIsProcessing(true);
@@ -269,7 +255,6 @@ export default function Checkout() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
-      {/* Title */}
       <div>
         <h1 className="text-3xl font-extrabold text-white">Express Checkout</h1>
         <p className="text-xs text-slate-400 mt-1">
@@ -286,10 +271,8 @@ export default function Checkout() {
 
       <form onSubmit={handleCheckoutSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         
-        {/* Form Fields Column (7 cols) */}
         <div className="lg:col-span-7 space-y-8">
           
-          {/* Step 1: Customer Contact */}
           <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 space-y-5 backdrop-blur-sm">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-800">
               <div className="w-7 h-7 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold font-mono">
@@ -346,7 +329,6 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Step 2: Shipping Destination */}
           <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 space-y-5 backdrop-blur-sm">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-800">
               <div className="w-7 h-7 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold font-mono">
@@ -419,7 +401,6 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Step 3: Payment Method Selection */}
           <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 space-y-5 backdrop-blur-sm">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-800">
               <div className="w-7 h-7 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold font-mono">
@@ -428,7 +409,6 @@ export default function Checkout() {
               <h2 className="text-base font-bold text-white">Payment Method</h2>
             </div>
 
-            {/* Option 1: Razorpay Gateway (Primary) */}
             <label
               className={`p-4 rounded-2xl border flex items-start gap-4 cursor-pointer transition-all ${
                 paymentMethod === 'razorpay'
@@ -466,7 +446,6 @@ export default function Checkout() {
               </div>
             </label>
 
-            {/* Option 2: Cash on Delivery */}
             <label
               className={`p-4 rounded-2xl border flex items-start gap-4 cursor-pointer transition-all ${
                 paymentMethod === 'cod'
@@ -493,14 +472,12 @@ export default function Checkout() {
 
         </div>
 
-        {/* Order Summary & Submit Sidebar (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
           <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 space-y-6 backdrop-blur-md sticky top-28 shadow-2xl">
             <h2 className="text-lg font-bold text-white border-b border-slate-800 pb-4">
               Acquisition Summary
             </h2>
 
-            {/* Items list preview */}
             <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
               {items.map((item) => (
                 <div key={item.cartItemId} className="flex items-center gap-3 text-xs">
@@ -522,7 +499,6 @@ export default function Checkout() {
               ))}
             </div>
 
-            {/* Calculation Totals */}
             <div className="space-y-2.5 text-xs text-slate-400 border-t border-slate-800 pt-4">
               <div className="flex justify-between">
                 <span>Subtotal</span>
@@ -550,7 +526,6 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isProcessing}
@@ -582,7 +557,6 @@ export default function Checkout() {
 
       </form>
 
-      {/* RAZORPAY TEST SIMULATOR MODAL */}
       {showSimulatorModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in">
           <div className="bg-slate-900 border border-indigo-500/40 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6">
@@ -597,7 +571,6 @@ export default function Checkout() {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Razorpay Brand Header */}
             <div className="flex items-center justify-between pb-4 border-b border-slate-800">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold">
@@ -614,7 +587,6 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* Simulated Payment Modes */}
             <div className="space-y-3">
               <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 flex items-center gap-3">
                 <QrCode className="w-6 h-6 text-indigo-400 shrink-0" />
@@ -637,7 +609,6 @@ export default function Checkout() {
               💡 <strong>Test Mode Note:</strong> This interactive modal lets you test the complete order generation, Axios order persistence, and invoice generation without needing an active merchant account!
             </p>
 
-            {/* Action Buttons */}
             <div className="space-y-2 pt-2">
               <button
                 onClick={handleSimulatePaymentSuccess}

@@ -49,7 +49,6 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           
-          {/* Brand Logo */}
           <Link to="/" className="flex items-center gap-2.5 group shrink-0">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-all duration-300">
               <Sparkles className="w-5 h-5 text-white animate-spin-slow" />
@@ -64,7 +63,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1 lg:gap-2">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path || (link.path.includes('?') && location.search.includes(link.path.split('?')[1]));
@@ -84,7 +82,6 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Search bar */}
           <form
             onSubmit={handleSearchSubmit}
             className="hidden lg:flex items-center relative flex-1 max-w-xs xl:max-w-sm"
@@ -99,9 +96,7 @@ export default function Navbar() {
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </form>
 
-          {/* Actions: Wishlist, Cart Drawer, User */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Wishlist Link */}
             <Link
               to="/products"
               className="relative p-2.5 text-slate-300 hover:text-white hover:bg-slate-800/70 rounded-xl transition-all"
@@ -115,7 +110,6 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Cart Trigger */}
             <button
               onClick={() => setIsCartOpen(true)}
               className="relative p-2.5 text-slate-300 hover:text-white hover:bg-slate-800/70 rounded-xl transition-all cursor-pointer group"
@@ -129,7 +123,6 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Auth section */}
             <div className="relative">
               {isClerkEnabled ? (
                 <>
@@ -154,7 +147,6 @@ export default function Navbar() {
                   </SignedOut>
                 </>
               ) : (
-                /* Fallback/Demo Auth dropdown */
                 isSignedIn ? (
                   <div className="relative">
                     <button
@@ -215,7 +207,6 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl"
@@ -226,7 +217,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-slate-800 space-y-3 animate-fade-in">
             <form onSubmit={handleSearchSubmit} className="relative mb-3">

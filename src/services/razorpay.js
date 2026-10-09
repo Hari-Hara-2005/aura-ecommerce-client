@@ -1,9 +1,3 @@
-/**
- * RAZORPAY CHECKOUT SERVICE
- * -----------------------------------------------------------
- * Handles loading Razorpay SDK and launching the standard checkout modal.
- * Includes interactive fallback / simulation mode if keys are invalid or test-only.
- */
 
 export const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -21,7 +15,7 @@ export const loadRazorpayScript = () => {
 };
 
 export const initiateRazorpayPayment = async ({
-  amount, // In currency units (e.g. INR / USD converted to paise)
+  amount,
   currency = 'INR',
   orderName = 'AURA Premium Order',
   description = 'E-commerce Purchase',
@@ -39,7 +33,6 @@ export const initiateRazorpayPayment = async ({
 
   const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_placeholder';
 
-  // Amount in subunits (e.g., paise for INR: 100 paise = 1 INR)
   const amountInSubunits = Math.round(Number(amount) * 100);
 
   const options = {
@@ -67,7 +60,7 @@ export const initiateRazorpayPayment = async ({
       merchant_order_ref: orderName,
     },
     theme: {
-      color: '#6366f1', // Indigo accent
+      color: '#6366f1',
       backdrop_color: 'rgba(15, 23, 42, 0.85)',
     },
     modal: {
@@ -87,7 +80,6 @@ export const initiateRazorpayPayment = async ({
     rzp.open();
   } catch (err) {
     console.warn('[Razorpay initialization notice]:', err.message);
-    // If invalid key causes direct throw or modal failure, pass to caller
     onFailure?.(err);
   }
 };

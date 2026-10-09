@@ -45,14 +45,12 @@ export default function QuickViewModal({ product, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-      {/* Backdrop */}
       <div
         onClick={onClose}
         className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
       />
 
       <div className="relative bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl z-10 overflow-hidden">
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors z-20 cursor-pointer"
@@ -61,7 +59,6 @@ export default function QuickViewModal({ product, onClose }) {
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Gallery View */}
           <div className="space-y-4">
             <div className="aspect-square rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 relative">
               <img
@@ -95,7 +92,6 @@ export default function QuickViewModal({ product, onClose }) {
             )}
           </div>
 
-          {/* Details & Selectors */}
           <div className="space-y-5">
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -132,7 +128,6 @@ export default function QuickViewModal({ product, onClose }) {
               {product.description}
             </p>
 
-            {/* Colors picker if available */}
             {product.colors && product.colors.length > 0 && (
               <div>
                 <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
@@ -156,7 +151,6 @@ export default function QuickViewModal({ product, onClose }) {
               </div>
             )}
 
-            {/* Sizes picker if available */}
             {product.sizes && product.sizes.length > 0 && (
               <div>
                 <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
@@ -180,9 +174,7 @@ export default function QuickViewModal({ product, onClose }) {
               </div>
             )}
 
-            {/* Quantity and Actions */}
             <div className="pt-2 flex flex-col sm:flex-row gap-3">
-              {/* Stepper */}
               <div className="flex items-center border border-slate-700 rounded-xl bg-slate-950/80 px-2 py-1 shrink-0">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -201,7 +193,6 @@ export default function QuickViewModal({ product, onClose }) {
                 </button>
               </div>
 
-              {/* Add to Cart button */}
               <button
                 onClick={handleAddToCart}
                 className="flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-xl shadow-indigo-600/30 transition-all cursor-pointer"
@@ -217,7 +208,6 @@ export default function QuickViewModal({ product, onClose }) {
                 )}
               </button>
 
-              {/* Wishlist button */}
               <button
                 onClick={() => toggleWishlist(product)}
                 className={`p-3 rounded-xl border transition-all cursor-pointer ${
@@ -231,7 +221,6 @@ export default function QuickViewModal({ product, onClose }) {
               </button>
             </div>
 
-            {/* View Full Page Link */}
             <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
               <span className="flex items-center gap-1.5">
                 <Truck className="w-4 h-4 text-indigo-400" /> Free 2-3 Day Delivery

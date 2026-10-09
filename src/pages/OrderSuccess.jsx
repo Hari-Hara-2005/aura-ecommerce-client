@@ -40,7 +40,6 @@ export default function OrderSuccess() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 space-y-10">
       
-      {/* Celebration Header */}
       <div className="text-center space-y-4">
         <div className="relative inline-block">
           <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto shadow-2xl shadow-emerald-500/20">
@@ -62,10 +61,8 @@ export default function OrderSuccess() {
         </div>
       </div>
 
-      {/* Invoice Card */}
       <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-8 backdrop-blur-md shadow-2xl">
         
-        {/* Receipt Header details */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 border-b border-slate-800 text-xs">
           <div>
             <span className="text-slate-500 block">Order Ref</span>
@@ -87,7 +84,6 @@ export default function OrderSuccess() {
           </div>
         </div>
 
-        {/* Ordered Items */}
         <div className="space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
             Acquired Items
@@ -114,7 +110,6 @@ export default function OrderSuccess() {
           </div>
         </div>
 
-        {/* Shipping & Payment Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-slate-800 text-xs">
           <div className="space-y-1.5">
             <span className="font-bold text-slate-300 block">Delivery Address</span>
@@ -151,7 +146,6 @@ export default function OrderSuccess() {
           </div>
         </div>
 
-        {/* Actions bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-800">
           <button
             onClick={handlePrint}

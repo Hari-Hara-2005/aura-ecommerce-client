@@ -32,7 +32,6 @@ export default function ProductDetail() {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Gallery and Variant selections
   const [activeImage, setActiveImage] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
@@ -40,7 +39,6 @@ export default function ProductDetail() {
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState('specs');
 
-  // Interactive review form state
   const [reviewsList, setReviewsList] = useState([]);
   const [reviewerName, setReviewerName] = useState('');
   const [reviewerRating, setReviewerRating] = useState(5);
@@ -57,14 +55,12 @@ export default function ProductDetail() {
         setSelectedColor(item.colors?.[0] || 'Standard');
         setSelectedSize(item.sizes?.[0] || 'Default');
 
-        // Initial reviews
         setReviewsList(item.reviews || [
           { reviewerName: 'Eleanor Vance', rating: 5, comment: 'Phenomenal build quality and pristine aesthetic. Arrived in 2 days.' },
           { reviewerName: 'Marcus Sterling', rating: 5, comment: 'Exceeded every expectation. The craftsmanship is bespoke standard.' },
           { reviewerName: 'Claire Dupont', rating: 4, comment: 'Exceptional finish and luxurious packaging. Highly recommend.' },
         ]);
 
-        // Load related items in same category
         if (item.category) {
           const related = await productService.getProducts({ category: item.category, limit: 4 });
           setRelatedProducts((related.products || []).filter((p) => p.id !== item.id));
@@ -150,7 +146,6 @@ export default function ProductDetail() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
       
-      {/* Breadcrumb & Navigation */}
       <div className="flex items-center justify-between text-xs text-slate-400">
         <div className="flex items-center gap-2">
           <Link to="/" className="hover:text-white transition-colors">Home</Link>
@@ -170,10 +165,8 @@ export default function ProductDetail() {
         </button>
       </div>
 
-      {/* Main Product Showcase */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         
-        {/* Left: Interactive Media Gallery (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
           <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 relative shadow-2xl">
             <img
@@ -207,7 +200,6 @@ export default function ProductDetail() {
           )}
         </div>
 
-        {/* Right: Product Details & Purchase Panel (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -225,7 +217,6 @@ export default function ProductDetail() {
               {product.title}
             </h1>
 
-            {/* Price Box */}
             <div className="flex items-baseline gap-3 mt-4">
               <span className="text-4xl font-extrabold text-white font-mono">
                 ${Number(product.price).toFixed(2)}
@@ -245,7 +236,6 @@ export default function ProductDetail() {
             {product.description}
           </p>
 
-          {/* Color Variants */}
           {product.colors && product.colors.length > 0 && (
             <div className="space-y-2.5">
               <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
@@ -269,7 +259,6 @@ export default function ProductDetail() {
             </div>
           )}
 
-          {/* Size Variants */}
           {product.sizes && product.sizes.length > 0 && (
             <div className="space-y-2.5">
               <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
@@ -293,10 +282,8 @@ export default function ProductDetail() {
             </div>
           )}
 
-          {/* Quantity & Action CTAs */}
           <div className="space-y-3 pt-2">
             <div className="flex gap-3">
-              {/* Stepper */}
               <div className="flex items-center border border-slate-700 rounded-xl bg-slate-900 px-3 py-1.5 shrink-0">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -315,7 +302,6 @@ export default function ProductDetail() {
                 </button>
               </div>
 
-              {/* Add to Cart */}
               <button
                 onClick={handleAddToCart}
                 className="flex-1 py-3.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-xl shadow-indigo-600/30 transition-all cursor-pointer"
@@ -331,7 +317,6 @@ export default function ProductDetail() {
                 )}
               </button>
 
-              {/* Wishlist button */}
               <button
                 onClick={() => toggleWishlist(product)}
                 className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
@@ -345,7 +330,6 @@ export default function ProductDetail() {
               </button>
             </div>
 
-            {/* Direct Buy Now Button */}
             <button
               onClick={handleBuyNow}
               className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
@@ -354,7 +338,6 @@ export default function ProductDetail() {
             </button>
           </div>
 
-          {/* Guarantees List */}
           <div className="grid grid-cols-3 gap-3 pt-6 border-t border-slate-800 text-center">
             <div className="p-3 rounded-xl bg-slate-900/40 border border-slate-800">
               <Truck className="w-4 h-4 text-indigo-400 mx-auto mb-1" />
@@ -375,7 +358,6 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Tabs: Specifications & Customer Reviews */}
       <div className="border-t border-slate-800 pt-12 space-y-8">
         <div className="flex border-b border-slate-800 gap-6">
           <button
@@ -433,7 +415,6 @@ export default function ProductDetail() {
           </div>
         ) : (
           <div className="space-y-8">
-            {/* Write a review box */}
             <form onSubmit={handleAddReview} className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4 max-w-xl">
               <h3 className="font-bold text-white text-base flex items-center gap-2">
                 <MessageSquarePlus className="w-5 h-5 text-indigo-400" /> Write a Verified Client Review
@@ -482,7 +463,6 @@ export default function ProductDetail() {
               </button>
             </form>
 
-            {/* Existing reviews */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {reviewsList.map((rev, idx) => (
                 <div key={idx} className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
@@ -502,7 +482,6 @@ export default function ProductDetail() {
         )}
       </div>
 
-      {/* Related Products */}
       {relatedProducts.length > 0 && (
         <div className="border-t border-slate-800 pt-16 space-y-8">
           <div className="flex items-center justify-between">

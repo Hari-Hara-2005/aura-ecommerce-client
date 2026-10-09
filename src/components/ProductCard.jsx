@@ -38,7 +38,6 @@ export default function ProductCard({ product, onQuickView }) {
   return (
     <div className="group relative rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/10 flex flex-col overflow-hidden backdrop-blur-sm">
       
-      {/* Image Thumbnail Container */}
       <div className="relative aspect-square w-full overflow-hidden bg-slate-950/80">
         <Link to={`/products/${product.id}`} className="block w-full h-full">
           <img
@@ -49,7 +48,6 @@ export default function ProductCard({ product, onQuickView }) {
           />
         </Link>
 
-        {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
           {discountPercent > 0 && (
             <span className="px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider bg-rose-500/90 text-white rounded-lg backdrop-blur-md shadow-md shadow-rose-500/30">
@@ -63,9 +61,7 @@ export default function ProductCard({ product, onQuickView }) {
           )}
         </div>
 
-        {/* Action Buttons Overlay */}
         <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
-          {/* Wishlist Button */}
           <button
             onClick={handleWishlistClick}
             className={`p-2 rounded-xl backdrop-blur-md transition-all cursor-pointer ${
@@ -78,7 +74,6 @@ export default function ProductCard({ product, onQuickView }) {
             <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
           </button>
 
-          {/* Quick View Button */}
           <button
             onClick={handleQuickViewClick}
             className="p-2 rounded-xl bg-slate-900/70 hover:bg-slate-800 text-slate-300 hover:text-white backdrop-blur-md border border-slate-700/50 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"
@@ -88,7 +83,6 @@ export default function ProductCard({ product, onQuickView }) {
           </button>
         </div>
 
-        {/* Quick Add Button on Hover */}
         <div className="absolute inset-x-3 bottom-3 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
           <button
             onClick={handleAddToCart}
@@ -107,10 +101,8 @@ export default function ProductCard({ product, onQuickView }) {
         </div>
       </div>
 
-      {/* Card Details */}
       <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
         <div>
-          {/* Category & Rating */}
           <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5">
             <span className="uppercase tracking-wider text-[10px] font-semibold text-indigo-400">
               {product.category || 'Collection'}
@@ -123,7 +115,6 @@ export default function ProductCard({ product, onQuickView }) {
             </div>
           </div>
 
-          {/* Product Title */}
           <Link
             to={`/products/${product.id}`}
             className="text-sm font-semibold text-white line-clamp-1 group-hover:text-indigo-300 transition-colors"
@@ -131,13 +122,11 @@ export default function ProductCard({ product, onQuickView }) {
             {product.title}
           </Link>
 
-          {/* Short description */}
           <p className="text-xs text-slate-400 line-clamp-2 mt-1 leading-relaxed">
             {product.description}
           </p>
         </div>
 
-        {/* Price & Action */}
         <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="text-lg font-bold text-white font-mono">

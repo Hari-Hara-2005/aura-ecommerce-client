@@ -4,14 +4,12 @@ import { CustomAuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 
-// Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import Toast from './components/Toast';
 import ClerkBanner from './components/ClerkBanner';
 
-// Pages
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
@@ -29,13 +27,10 @@ export default function App() {
         <WishlistProvider>
           <BrowserRouter>
             <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
-              {/* Clerk & Razorpay quick guide banner */}
               <ClerkBanner />
 
-              {/* Main Navigation */}
               <Navbar />
 
-              {/* Main App Routes */}
               <main className="flex-1">
                 <Routes>
                   <Route path="/" element={<Home />} />
@@ -51,13 +46,10 @@ export default function App() {
                 </Routes>
               </main>
 
-              {/* Slide-over Cart Drawer */}
               <CartDrawer />
 
-              {/* Floating Feedback Notification */}
               <Toast />
 
-              {/* Footer */}
               <Footer />
             </div>
           </BrowserRouter>

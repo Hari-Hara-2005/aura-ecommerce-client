@@ -26,12 +26,10 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 relative overflow-hidden">
-      {/* Ambient background blur */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] bg-indigo-600/15 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-md">
         
-        {/* Checkout requirement banner if coming from cart/checkout */}
         {isFromCheckout && (
           <div className="mb-6 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-200 text-xs flex items-center gap-3 backdrop-blur-md">
             <ShieldCheck className="w-5 h-5 text-indigo-400 shrink-0" />
@@ -42,7 +40,6 @@ export default function SignInPage() {
           </div>
         )}
 
-        {/* Brand header */}
         <div className="text-center mb-8 space-y-2">
           <Link to="/" className="inline-flex items-center gap-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
@@ -60,7 +57,6 @@ export default function SignInPage() {
           </p>
         </div>
 
-        {/* Clerk Component or Interactive Authentication Form */}
         {isClerkValid ? (
           <div className="flex justify-center bg-slate-900/60 p-6 rounded-3xl border border-slate-800 backdrop-blur-xl shadow-2xl">
             <SignIn
@@ -74,7 +70,6 @@ export default function SignInPage() {
         ) : (
           <div className="bg-slate-900/70 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-6">
             
-            {/* Quick Demo Login Preset Buttons */}
             <div className="space-y-2.5">
               <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-400 block">
                 Instant Demo Access
@@ -104,7 +99,6 @@ export default function SignInPage() {
               </span>
             </div>
 
-            {/* Custom Interactive Form */}
             <form onSubmit={handleDemoSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-slate-400 mb-1">Email Address</label>
@@ -147,7 +141,6 @@ export default function SignInPage() {
               </button>
             </form>
 
-            {/* Switch to sign up */}
             <div className="text-center text-xs text-slate-400 pt-2 border-t border-slate-800">
               Don't have an account yet?{' '}
               <Link to="/sign-up" className="text-indigo-400 font-bold hover:underline">
@@ -155,7 +148,6 @@ export default function SignInPage() {
               </Link>
             </div>
 
-            {/* Clerk info notice */}
             <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-[11px] text-slate-400 space-y-1">
               <div className="flex items-center gap-1.5 text-indigo-300 font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5" /> Clerk Auth Ready

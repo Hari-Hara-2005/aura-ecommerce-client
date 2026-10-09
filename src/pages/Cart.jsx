@@ -70,7 +70,6 @@ export default function Cart() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800 gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-white">Your Shopping Bag</h1>
@@ -89,7 +88,6 @@ export default function Cart() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         
-        {/* Cart Items List (8 cols) */}
         <div className="lg:col-span-8 space-y-4">
           {items.map((item) => (
             <div
@@ -122,7 +120,6 @@ export default function Cart() {
                   </button>
                 </div>
 
-                {/* Variant tags */}
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs text-slate-400">
                   {item.selectedColor && (
                     <span className="bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 text-slate-300 text-[11px]">
@@ -136,7 +133,6 @@ export default function Cart() {
                   )}
                 </div>
 
-                {/* Quantity and Price */}
                 <div className="flex items-center justify-between pt-3 border-t border-slate-800/80">
                   <div className="flex items-center border border-slate-700 rounded-xl bg-slate-950 px-2 py-1">
                     <button
@@ -171,7 +167,6 @@ export default function Cart() {
             </div>
           ))}
 
-          {/* Continue shopping link */}
           <div className="pt-4">
             <Link
               to="/products"
@@ -182,14 +177,12 @@ export default function Cart() {
           </div>
         </div>
 
-        {/* Order Summary & Checkout Card (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
           <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 space-y-6 backdrop-blur-md sticky top-28 shadow-2xl">
             <h2 className="text-lg font-bold text-white border-b border-slate-800 pb-4">
               Order Summary
             </h2>
 
-            {/* Promo Code section */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center justify-between">
                 <span>Promotional Code</span>
@@ -230,7 +223,6 @@ export default function Cart() {
               )}
             </div>
 
-            {/* Calculations Breakdown */}
             <div className="space-y-3 text-xs text-slate-400 border-t border-slate-800 pt-4">
               <div className="flex justify-between">
                 <span>Items Subtotal</span>
@@ -262,7 +254,6 @@ export default function Cart() {
               </div>
             </div>
 
-            {/* Checkout Action Button */}
             <button
               onClick={() => {
                 if (!isSignedIn) {
@@ -282,7 +273,6 @@ export default function Cart() {
               </p>
             )}
 
-            {/* Security note */}
             <div className="pt-2 text-center text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-indigo-400" />
               <span>Direct Bank & UPI Integration via Razorpay</span>

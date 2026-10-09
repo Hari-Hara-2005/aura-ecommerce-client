@@ -20,9 +20,8 @@ export function CartProvider({ children }) {
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
-  const [toast, setToast] = useState(null); // { message, type, undoAction }
+  const [toast, setToast] = useState(null);
 
-  // Sync with LocalStorage
   useEffect(() => {
     localStorage.setItem('aura_cart_items', JSON.stringify(items));
   }, [items]);
@@ -108,7 +107,6 @@ export function CartProvider({ children }) {
     showToast('Coupon removed.', 'info');
   };
 
-  // Calculations
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
@@ -123,9 +121,8 @@ export function CartProvider({ children }) {
     }
   }
 
-  // Free shipping above $150
   const shipping = subtotal > 150 || subtotal === 0 ? 0 : 15;
-  const tax = Number(((subtotal - discountAmount) * 0.05).toFixed(2)); // 5% estimated tax
+  const tax = Number(((subtotal - discountAmount) * 0.05).toFixed(2));
   const total = Math.max(0, Number((subtotal - discountAmount + shipping + tax).toFixed(2)));
 
   return (

@@ -24,7 +24,6 @@ export default function Products() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filter States
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [sortBy, setSortBy] = useState('default');
@@ -34,7 +33,6 @@ export default function Products() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // Sync state with URL params
   useEffect(() => {
     const cat = searchParams.get('category') || 'all';
     const query = searchParams.get('search') || '';
@@ -42,7 +40,6 @@ export default function Products() {
     setSearchQuery(query);
   }, [searchParams]);
 
-  // Load Categories & Products via Axios
   useEffect(() => {
     async function init() {
       try {
@@ -74,7 +71,6 @@ export default function Products() {
     loadProducts();
   }, [selectedCategory, searchQuery]);
 
-  // Handle category change and sync URL
   const handleCategorySelect = (cat) => {
     setSelectedCategory(cat);
     const newParams = new URLSearchParams(searchParams);
@@ -107,7 +103,6 @@ export default function Products() {
     setSearchParams({});
   };
 
-  // Filter & Sort
   const filteredProducts = products
     .filter((p) => p.price <= maxPrice)
     .filter((p) => (minRating > 0 ? (p.rating || 0) >= minRating : true))
@@ -121,7 +116,6 @@ export default function Products() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Header Banner */}
       <div className="relative rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950/60 to-slate-900 border border-slate-800 p-8 sm:p-12 overflow-hidden shadow-2xl">
         <div className="max-w-2xl space-y-3 relative z-10">
           <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">
@@ -138,10 +132,8 @@ export default function Products() {
         </div>
       </div>
 
-      {/* Main Container */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
-        {/* Filters Sidebar (Desktop) */}
         <aside className="hidden lg:block space-y-6 bg-slate-900/40 p-6 rounded-3xl border border-slate-800/80 h-fit sticky top-28 backdrop-blur-md">
           <div className="flex items-center justify-between pb-4 border-b border-slate-800">
             <h3 className="font-bold text-white text-base flex items-center gap-2">
@@ -155,7 +147,6 @@ export default function Products() {
             </button>
           </div>
 
-          {/* Search within page */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
               Keyword Search
@@ -172,7 +163,6 @@ export default function Products() {
             </div>
           </div>
 
-          {/* Category List */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
               Departments
@@ -204,7 +194,6 @@ export default function Products() {
             </div>
           </div>
 
-          {/* Price Range Slider */}
           <div className="space-y-2 pt-2 border-t border-slate-800">
             <div className="flex justify-between text-xs">
               <span className="font-semibold text-slate-300">Max Price</span>
@@ -225,7 +214,6 @@ export default function Products() {
             </div>
           </div>
 
-          {/* Customer Rating Filter */}
           <div className="space-y-2 pt-2 border-t border-slate-800">
             <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
               Minimum Rating
@@ -248,9 +236,7 @@ export default function Products() {
           </div>
         </aside>
 
-        {/* Product Grid Area */}
         <div className="lg:col-span-3 space-y-6">
-          {/* Controls Bar: Sort, View, Count */}
           <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-wrap items-center justify-between gap-4">
             <div className="text-xs text-slate-400">
               Showing <span className="text-white font-bold">{filteredProducts.length}</span> pieces
@@ -260,7 +246,6 @@ export default function Products() {
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Sort Selector */}
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-400 hidden sm:inline">Sort:</span>
                 <select
@@ -276,7 +261,6 @@ export default function Products() {
                 </select>
               </div>
 
-              {/* View toggle */}
               <div className="flex items-center border border-slate-800 rounded-xl bg-slate-950 p-0.5">
                 <button
                   onClick={() => setViewMode('grid')}
@@ -300,7 +284,6 @@ export default function Products() {
             </div>
           </div>
 
-          {/* Product Items */}
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
@@ -378,7 +361,6 @@ export default function Products() {
         </div>
       </div>
 
-      {/* Quick View Modal */}
       {quickViewProduct && (
         <QuickViewModal
           product={quickViewProduct}

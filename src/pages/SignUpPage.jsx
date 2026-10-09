@@ -22,12 +22,10 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 relative overflow-hidden">
-      {/* Ambient background blur */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[400px] bg-purple-600/15 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-md">
         
-        {/* Checkout requirement banner if coming from cart/checkout */}
         {isFromCheckout && (
           <div className="mb-6 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-200 text-xs flex items-center gap-3 backdrop-blur-md">
             <ShieldCheck className="w-5 h-5 text-indigo-400 shrink-0" />
@@ -38,7 +36,6 @@ export default function SignUpPage() {
           </div>
         )}
 
-        {/* Brand header */}
         <div className="text-center mb-8 space-y-2">
           <Link to="/" className="inline-flex items-center gap-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
@@ -56,7 +53,6 @@ export default function SignUpPage() {
           </p>
         </div>
 
-        {/* Clerk Component or Interactive Authentication Form */}
         {isClerkValid ? (
           <div className="flex justify-center bg-slate-900/60 p-6 rounded-3xl border border-slate-800 backdrop-blur-xl shadow-2xl">
             <SignUp
@@ -128,7 +124,6 @@ export default function SignUpPage() {
               </button>
             </form>
 
-            {/* Switch to sign in */}
             <div className="text-center text-xs text-slate-400 pt-2 border-t border-slate-800">
               Already have an account?{' '}
               <Link to="/sign-in" className="text-indigo-400 font-bold hover:underline">
@@ -136,7 +131,6 @@ export default function SignUpPage() {
               </Link>
             </div>
 
-            {/* Clerk info notice */}
             <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-[11px] text-slate-400 space-y-1">
               <div className="flex items-center gap-1.5 text-indigo-300 font-semibold">
                 <ShieldCheck className="w-3.5 h-3.5" /> Clerk Auth Integrated

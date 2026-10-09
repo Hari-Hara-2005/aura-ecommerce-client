@@ -29,7 +29,6 @@ export default function Footer() {
 
   return (
     <footer className="bg-slate-950 border-t border-slate-900 text-slate-400 text-sm mt-24">
-      {/* Trust & Guarantee Banner */}
       <div className="border-b border-slate-900/80 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -76,11 +75,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Main Footer Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           
-          {/* Brand info */}
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white">
@@ -92,7 +89,6 @@ export default function Footer() {
               Curated luxury craftsmanship spanning vanguard personal electronics, tailored couture, and artisanal accessories. Designed for discerning tastemakers.
             </p>
             
-            {/* Newsletter input */}
             <div className="pt-2">
               <p className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                 Join the Private Circle & Receive 20% Off
@@ -125,7 +121,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 1 */}
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Catalogues</h4>
             <ul className="space-y-2.5 text-xs">
@@ -137,7 +132,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 2 */}
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Client Care</h4>
             <ul className="space-y-2.5 text-xs">
@@ -149,7 +143,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3 */}
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Payment & Security</h4>
             <div className="space-y-3">
@@ -166,7 +159,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>© {new Date().getFullYear()} AURA Luxury Collective Inc. All rights reserved.</p>
           <div className="flex items-center gap-6">
