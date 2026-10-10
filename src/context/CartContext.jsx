@@ -26,10 +26,8 @@ export function CartProvider({ children }) {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [toast, setToast] = useState(null);
 
-  // Sync user with database and load DB cart when signed in
   useEffect(() => {
     if (isSignedIn && user?.id) {
-      // 1. Sync user profile into PostgreSQL users table
       userService.syncUser({
         clerk_user_id: user.id,
         name: user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Client',
@@ -37,7 +35,6 @@ export function CartProvider({ children }) {
         phone: user.primaryPhoneNumber?.phoneNumber || null,
       }).catch(() => {});
 
-      // 2. Fetch cart from database
       cartService.getCart(user.id).then((cartData) => {
         if (cartData && Array.isArray(cartData.items) && cartData.items.length > 0) {
           const formatted = cartData.items.map((it) => ({
@@ -104,7 +101,6 @@ export function CartProvider({ children }) {
       ];
     });
 
-    // Sync to DB cart if user is signed in
     if (isSignedIn && user?.id && product.id) {
       cartService.addToCart({
         clerk_user_id: user.id,

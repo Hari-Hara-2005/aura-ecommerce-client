@@ -190,7 +190,6 @@ export default function ProductDetail() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
       
-      {/* Breadcrumbs */}
       <div className="flex items-center justify-between text-xs text-slate-500">
         <div className="flex items-center gap-2">
           <Link to="/" className="hover:text-slate-900 transition-colors">Home</Link>
@@ -212,7 +211,6 @@ export default function ProductDetail() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         
-        {/* Gallery */}
         <div className="lg:col-span-7 space-y-4">
           <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-slate-50 border border-slate-200/80 relative shadow-sm">
             <img
@@ -246,7 +244,6 @@ export default function ProductDetail() {
           )}
         </div>
 
-        {/* Details & Actions */}
         <div className="lg:col-span-5 space-y-6">
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -405,7 +402,6 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Tabs Section */}
       <div className="border-t border-slate-200 pt-12 space-y-8">
         <div className="flex border-b border-slate-200 gap-6">
           <button

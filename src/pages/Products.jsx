@@ -117,7 +117,6 @@ export default function Products() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Banner */}
       <div className="relative rounded-3xl bg-gradient-to-r from-indigo-50 via-white to-purple-50 border border-indigo-100/90 p-8 sm:p-12 overflow-hidden shadow-xs">
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-2xl space-y-3 relative z-10">
@@ -136,7 +135,6 @@ export default function Products() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Filters Sidebar */}
         <aside className="hidden lg:block space-y-6 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs h-fit sticky top-28">
           <div className="flex items-center justify-between pb-4 border-b border-slate-100">
             <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
@@ -244,7 +242,6 @@ export default function Products() {
           </div>
         </aside>
 
-        {/* Product Grid Area */}
         <div className="lg:col-span-3 space-y-6">
           <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
             <div className="text-xs text-slate-500">
