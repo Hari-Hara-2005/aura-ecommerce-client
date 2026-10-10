@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://dummyjson.com';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -29,221 +29,175 @@ apiClient.interceptors.response.use(
   }
 );
 
-export const FALLBACK_PRODUCTS = [
-  {
-    id: 101,
-    title: 'AURA CyberSphere Studio Wireless Headphones',
-    description: 'Flagship active noise cancellation, spatial audio calibration with 40-hour battery life and custom titanium acoustic drivers.',
-    price: 349.99,
-    discountPercentage: 15,
-    rating: 4.9,
-    stock: 24,
-    brand: 'AURA Audio',
-    category: 'electronics',
-    thumbnail: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=800&q=80'
-    ],
-    tags: ['wireless', 'headphones', 'sound', 'luxury'],
-    colors: ['Obsidian Black', 'Lunar Silver', 'Cosmic Indigo'],
-    sizes: ['Standard']
-  },
-  {
-    id: 102,
-    title: 'Chronos Luminary Obsidian Ceramic Watch',
-    description: 'Precision sapphire crystal automatic mechanical chronograph with aerospace-grade ceramic case and waterproof 100m resistance.',
-    price: 899.00,
-    discountPercentage: 20,
-    rating: 4.95,
-    stock: 9,
-    brand: 'Chronos Geneva',
-    category: 'watches',
-    thumbnail: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=800&q=80'
-    ],
-    tags: ['luxury', 'watch', 'chronograph', 'automatic'],
-    colors: ['Ceramic Black', 'Silver Frost', 'Rose Gold'],
-    sizes: ['40mm', '42mm']
-  },
-  {
-    id: 103,
-    title: 'Verve Minimalist Sculpted Wool Trench Coat',
-    description: 'Hand-tailored Italian double-faced cashmere wool coat designed with modern oversized silhouette and hidden horn button closure.',
-    price: 495.00,
-    discountPercentage: 10,
-    rating: 4.85,
-    stock: 14,
-    brand: 'Verve Atelier',
-    category: 'fashion',
-    thumbnail: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&w=800&q=80'
-    ],
-    tags: ['fashion', 'coat', 'winter', 'wool'],
-    colors: ['Camel Beige', 'Midnight Black', 'Slate Grey'],
-    sizes: ['S', 'M', 'L', 'XL']
-  },
-  {
-    id: 104,
-    title: 'Aether Mirage Mirrorless 4K Cinema Camera',
-    description: 'Full-frame 61MP BSI sensor with 8K 30fps HDR video, cinematic color grading profile, and ultra-fast dual pixel autofocus.',
-    price: 1999.00,
-    discountPercentage: 12,
-    rating: 4.92,
-    stock: 6,
-    brand: 'Aether Optical',
-    category: 'electronics',
-    thumbnail: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=800&q=80'
-    ],
-    tags: ['camera', 'cinematic', 'photo', 'electronics'],
-    colors: ['Matte Black'],
-    sizes: ['Body Only', 'Body + 24-70mm Lens']
-  },
-  {
-    id: 105,
-    title: 'Solstice Botanical Eau De Parfum 100ml',
-    description: 'Rare bourbon vanilla infused with bergamot blossom, smoked sandalwood and amber resin. Long lasting 18-hour projection.',
-    price: 185.00,
-    discountPercentage: 5,
-    rating: 4.88,
-    stock: 35,
-    brand: 'Maison Solstice',
-    category: 'fragrance',
-    thumbnail: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80'
-    ],
-    tags: ['perfume', 'luxury', 'fragrance', 'scent'],
-    colors: ['Amber Gold'],
-    sizes: ['50ml', '100ml']
-  },
-  {
-    id: 106,
-    title: 'Acrobat Swift Carbon Fiber Road Runner',
-    description: 'Propulsive carbon plate performance sneakers with breathable matrix mesh upper and high-energy nitrogen rebound foam.',
-    price: 220.00,
-    discountPercentage: 18,
-    rating: 4.79,
-    stock: 19,
-    brand: 'Acrobat Athletics',
-    category: 'footwear',
-    thumbnail: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=800&q=80'
-    ],
-    tags: ['sneakers', 'running', 'footwear', 'carbon'],
-    colors: ['Crimson Blaze', 'Triple Black', 'Cyber Neon'],
-    sizes: ['US 8', 'US 9', 'US 10', 'US 11', 'US 12']
-  },
-  {
-    id: 107,
-    title: 'Elysian Full-Grain Italian Leather Weekender Bag',
-    description: 'Artisan vegetable-tanned full-grain leather luggage with water-resistant cotton lining, laptop sleeve, and brass hardware.',
-    price: 430.00,
-    discountPercentage: 15,
-    rating: 4.93,
-    stock: 11,
-    brand: 'Elysian Leather',
-    category: 'fashion',
-    thumbnail: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80'
-    ],
-    tags: ['leather', 'bag', 'travel', 'duffel'],
-    colors: ['Cognac Tan', 'Espresso Dark Brown', 'Jet Black'],
-    sizes: ['45 Liters']
-  },
-  {
-    id: 108,
-    title: 'Nova Acoustic High-Fidelity Desktop Speaker',
-    description: 'Dual walnut wooden enclosure bookshelf speakers with aptX HD Bluetooth 5.3, optical digital inputs and punchy studio bass.',
-    price: 380.00,
-    discountPercentage: 8,
-    rating: 4.86,
-    stock: 17,
-    brand: 'Nova Acoustic',
-    category: 'electronics',
-    thumbnail: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=800&q=80'
-    ],
-    tags: ['speaker', 'audio', 'sound', 'walnut'],
-    colors: ['Walnut Wood', 'Black Ash', 'Natural Birch'],
-    sizes: ['Pair']
-  }
-];
-
 export const productService = {
-  async getProducts({ limit = 30, skip = 0, category, search, sortBy, order } = {}) {
+  async getProducts({ limit = 60, skip = 0, category, search, sortBy, order } = {}) {
     try {
-      if (search && search.trim() !== '') {
-        const response = await apiClient.get(`/products/search?q=${encodeURIComponent(search)}`);
-        return response.data;
-      }
+      const response = await apiClient.get('/product');
+      const rawList = response.data?.data || response.data || [];
       
-      let endpoint = `/products?limit=${limit}&skip=${skip}`;
+      let results = (Array.isArray(rawList) ? rawList : []).map((p) => ({
+        ...p,
+        id: p.id,
+        title: p.name || p.title || 'Product',
+        name: p.name || p.title || 'Product',
+        description: p.description || '',
+        price: Number(p.price || 0),
+        stock: p.stock !== undefined ? Number(p.stock) : 0,
+        thumbnail: p.image || p.thumbnail || '',
+        image: p.image || '',
+        images: Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : []),
+        category: p.category_name || p.category || 'General',
+        category_name: p.category_name || p.category,
+        category_id: p.category_id,
+        rating: p.rating ? Number(p.rating) : 5.0,
+      }));
+
       if (category && category !== 'all') {
-        endpoint = `/products/category/${encodeURIComponent(category)}?limit=${limit}&skip=${skip}`;
-      }
-      if (sortBy) {
-        endpoint += `&sortBy=${sortBy}&order=${order || 'asc'}`;
+        const catQuery = category.toLowerCase().trim();
+        results = results.filter(
+          (p) =>
+            p.category?.toLowerCase() === catQuery ||
+            p.category_name?.toLowerCase() === catQuery ||
+            p.category_id?.toLowerCase() === catQuery
+        );
       }
 
-      const response = await apiClient.get(endpoint);
-      return response.data;
-    } catch (error) {
-      console.warn('[productService.getProducts] Fallback to internal products due to network/API status:', error.message);
-      let results = [...FALLBACK_PRODUCTS];
-      if (category && category !== 'all') {
-        results = results.filter(p => p.category.toLowerCase() === category.toLowerCase());
+      if (search && search.trim() !== '') {
+        const q = search.toLowerCase().trim();
+        results = results.filter(
+          (p) =>
+            p.title?.toLowerCase().includes(q) ||
+            p.description?.toLowerCase().includes(q)
+        );
       }
-      if (search) {
-        const q = search.toLowerCase();
-        results = results.filter(p => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+
+      if (sortBy === 'price-low') {
+        results.sort((a, b) => a.price - b.price);
+      } else if (sortBy === 'price-high') {
+        results.sort((a, b) => b.price - a.price);
+      } else if (sortBy === 'rating') {
+        results.sort((a, b) => b.rating - a.rating);
+      } else if (sortBy === 'name') {
+        results.sort((a, b) => a.title.localeCompare(b.title));
       }
+
+      if (limit) {
+        results = results.slice(skip, skip + limit);
+      }
+
       return {
         products: results,
         total: results.length,
+        skip,
+        limit,
+      };
+    } catch (error) {
+      console.error('[productService.getProducts] Failed to fetch live products:', error.message);
+      return {
+        products: [],
+        total: 0,
         skip: 0,
-        limit: results.length
+        limit: 0,
       };
     }
   },
 
   async getProductById(id) {
     try {
-      const response = await apiClient.get(`/products/${id}`);
-      return response.data;
+      const response = await apiClient.get(`/product/${id}`);
+      const raw = response.data?.data || response.data;
+      if (raw) {
+        return {
+          ...raw,
+          id: raw.id,
+          title: raw.name || raw.title || 'Product',
+          name: raw.name || raw.title || 'Product',
+          description: raw.description || '',
+          price: Number(raw.price || 0),
+          stock: raw.stock !== undefined ? Number(raw.stock) : 0,
+          thumbnail: raw.image || raw.thumbnail || '',
+          image: raw.image || '',
+          images: Array.isArray(raw.images) && raw.images.length > 0 ? raw.images : (raw.image ? [raw.image] : []),
+          category: raw.category_name || raw.category || 'General',
+          category_id: raw.category_id,
+          rating: raw.rating ? Number(raw.rating) : 5.0,
+        };
+      }
+      return null;
     } catch (error) {
-      console.warn(`[productService.getProductById] Fallback for ID ${id}:`, error.message);
-      const fallback = FALLBACK_PRODUCTS.find(p => p.id === Number(id)) || FALLBACK_PRODUCTS[0];
-      return fallback;
+      console.error(`[productService.getProductById] Failed to fetch product ${id}:`, error.message);
+      return null;
     }
   },
 
   async getCategories() {
     try {
-      const response = await apiClient.get('/products/categories');
-      const raw = response.data;
-      if (Array.isArray(raw)) {
-        return raw.map(cat => (typeof cat === 'object' ? cat.slug || cat.name : cat));
+      const response = await apiClient.get('/categories');
+      const rawList = response.data?.data || response.data || [];
+      if (Array.isArray(rawList)) {
+        return rawList;
       }
-      return ['smartphones', 'laptops', 'fragrances', 'skincare', 'groceries', 'home-decoration', 'furniture', 'tops', 'womens-dresses'];
+      return [];
     } catch (error) {
-      console.warn('[productService.getCategories] Using fallback categories');
-      return ['electronics', 'watches', 'fashion', 'fragrance', 'footwear'];
+      console.error('[productService.getCategories] Failed to fetch categories:', error.message);
+      return [];
+    }
+  },
+};
+
+export const cartService = {
+  async getCart(clerkId) {
+    try {
+      if (!clerkId) return { items: [], subtotal: 0, itemCount: 0 };
+      const response = await apiClient.get('/cart', { params: { clerkId } });
+      return response.data || { items: [], subtotal: 0, itemCount: 0 };
+    } catch (error) {
+      console.error('[cartService.getCart] Error:', error.message);
+      return { items: [], subtotal: 0, itemCount: 0 };
+    }
+  },
+
+  async addToCart({ clerk_user_id, product_id, quantity = 1 }) {
+    try {
+      const response = await apiClient.post('/cart', { clerk_user_id, product_id, quantity });
+      return response.data;
+    } catch (error) {
+      console.error('[cartService.addToCart] Error:', error.message);
+      throw error;
+    }
+  },
+
+  async updateQuantity({ clerk_user_id, product_id, quantity }) {
+    try {
+      const response = await apiClient.put('/cart', { clerk_user_id, product_id, quantity });
+      return response.data;
+    } catch (error) {
+      console.error('[cartService.updateQuantity] Error:', error.message);
+      throw error;
+    }
+  },
+
+  async removeFromCart({ clerk_user_id, product_id }) {
+    try {
+      const response = await apiClient.delete('/cart/item', {
+        data: { clerk_user_id, product_id },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('[cartService.removeFromCart] Error:', error.message);
+      throw error;
+    }
+  },
+
+  async clearCart(clerk_user_id) {
+    try {
+      const response = await apiClient.delete('/cart/clear', {
+        data: { clerk_user_id },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('[cartService.clearCart] Error:', error.message);
+      throw error;
     }
   },
 };
@@ -251,30 +205,33 @@ export const productService = {
 export const orderService = {
   async createOrder(orderPayload) {
     try {
-      console.log('[orderService.createOrder] Sending order to backend API:', orderPayload);
       const response = await apiClient.post('/orders', orderPayload);
-      const createdOrder = response.data?.order || response.data;
-      
-      const savedOrders = JSON.parse(localStorage.getItem('aura_orders') || '[]');
-      savedOrders.unshift(createdOrder);
-      localStorage.setItem('aura_orders', JSON.stringify(savedOrders));
-
-      return createdOrder;
+      return response.data?.order || response.data;
     } catch (error) {
-      console.warn('[orderService.createOrder] Falling back to local persistence:', error.message);
-      const dummyOrderId = 'ORD-' + Date.now().toString(36).toUpperCase() + '-' + Math.floor(Math.random() * 8999 + 1000);
-      const createdOrder = {
-        id: dummyOrderId,
-        ...orderPayload,
-        status: 'Confirmed',
-        createdAt: new Date().toISOString(),
-      };
-      
-      const savedOrders = JSON.parse(localStorage.getItem('aura_orders') || '[]');
-      savedOrders.unshift(createdOrder);
-      localStorage.setItem('aura_orders', JSON.stringify(savedOrders));
+      console.error('[orderService.createOrder] Failed to create order in database:', error.message);
+      throw error;
+    }
+  },
 
-      return createdOrder;
+  async getUserOrders(userId) {
+    try {
+      const res = await apiClient.get('/orders', {
+        params: { clerkId: userId },
+      });
+      return res.data?.orders || res.data?.data || [];
+    } catch (e) {
+      console.error('[orderService.getUserOrders] Error fetching from database:', e.message);
+      return [];
+    }
+  },
+
+  async getOrderById(orderId) {
+    try {
+      const res = await apiClient.get(`/orders/${orderId}`);
+      return res.data?.order || res.data;
+    } catch (e) {
+      console.error(`[orderService.getOrderById] Failed to fetch order ${orderId}:`, e.message);
+      return null;
     }
   },
 
@@ -282,27 +239,10 @@ export const orderService = {
     try {
       const res = await apiClient.post('/payment/verify', paymentDetails);
       return res.data;
-    } catch (error) {
-      console.warn('[orderService.verifyPayment] Local verification fallback:', error.message);
+    } catch {
       return { success: true, verifiedAt: new Date().toISOString() };
     }
   },
-
-  async getUserOrders(userId) {
-    try {
-      if (userId) {
-        const res = await apiClient.get(`/orders/user/${userId}`);
-        if (Array.isArray(res.data) && res.data.length > 0) return res.data;
-      }
-    } catch (e) {
-      console.warn('[orderService.getUserOrders] Fallback to local storage:', e.message);
-    }
-    try {
-      return JSON.parse(localStorage.getItem('aura_orders') || '[]');
-    } catch {
-      return [];
-    }
-  }
 };
 
 export const couponService = {
@@ -313,21 +253,31 @@ export const couponService = {
     } catch (error) {
       const cleanCode = code?.toUpperCase().trim();
       if (cleanCode === 'AURA10') return { valid: true, discountAmount: subtotal * 0.1, code: 'AURA10', message: '10% OFF Applied' };
-      if (cleanCode === 'LUXE20' && subtotal >= 200) return { valid: true, discountAmount: subtotal * 0.2, code: 'LUXE20', message: '20% OFF Applied' };
-      if (cleanCode === 'FIRST50' && subtotal >= 150) return { valid: true, discountAmount: 50, code: 'FIRST50', message: '$50 OFF Applied' };
+      if ((cleanCode === 'WELCOME20' || cleanCode === 'LUXE20') && subtotal >= 999) return { valid: true, discountAmount: subtotal * 0.2, code: 'WELCOME20', message: '20% OFF Applied' };
+      if ((cleanCode === 'LUXE500' || cleanCode === 'FIRST50') && subtotal >= 2500) return { valid: true, discountAmount: 500, code: 'LUXE500', message: '₹500 OFF Applied' };
       throw error?.response?.data || { message: 'Invalid coupon code' };
     }
-  }
+  },
 };
 
 export const userService = {
   async syncUser(userData) {
     try {
       const res = await apiClient.post('/users/sync', userData);
-      return res.data;
+      return res.data?.user || res.data;
     } catch (e) {
-      console.warn('[userService.syncUser] Local cache fallback:', e.message);
+      console.error('[userService.syncUser] Error:', e.message);
       return null;
     }
-  }
+  },
+
+  async getUser(id) {
+    try {
+      const res = await apiClient.get(`/users/${id}`);
+      return res.data?.user || res.data;
+    } catch (e) {
+      console.error(`[userService.getUser] Error fetching user ${id}:`, e.message);
+      return null;
+    }
+  },
 };

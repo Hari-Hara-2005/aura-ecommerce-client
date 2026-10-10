@@ -1,14 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuthUser } from './AuthContext';
+import { cartService, userService } from '../services/api';
 
 const CartContext = createContext(null);
 
 export const COUPONS = {
   'AURA10': { code: 'AURA10', discountPercent: 10, description: '10% Off Sitewide' },
   'WELCOME20': { code: 'WELCOME20', discountPercent: 20, description: '20% First Order Welcome Discount' },
-  'LUXE50': { code: 'LUXE50', discountFlat: 50, minOrder: 300, description: '$50 Flat Off orders over $300' },
+  'LUXE500': { code: 'LUXE500', discountFlat: 500, minOrder: 2500, description: '₹500 Flat Off orders over ₹2,500' },
 };
 
 export function CartProvider({ children }) {
+  const { user, isSignedIn } = useAuthUser();
+
   const [items, setItems] = useState(() => {
     try {
       const saved = localStorage.getItem('aura_cart_items');
@@ -21,6 +25,39 @@ export function CartProvider({ children }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [toast, setToast] = useState(null);
+
+  // Sync user with database and load DB cart when signed in
+  useEffect(() => {
+    if (isSignedIn && user?.id) {
+      // 1. Sync user profile into PostgreSQL users table
+      userService.syncUser({
+        clerk_user_id: user.id,
+        name: user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Client',
+        email: user.primaryEmailAddress?.emailAddress || null,
+        phone: user.primaryPhoneNumber?.phoneNumber || null,
+      }).catch(() => {});
+
+      // 2. Fetch cart from database
+      cartService.getCart(user.id).then((cartData) => {
+        if (cartData && Array.isArray(cartData.items) && cartData.items.length > 0) {
+          const formatted = cartData.items.map((it) => ({
+            cartItemId: `${it.id || it.product_id}-Default-Standard`,
+            id: it.id || it.product_id,
+            title: it.title || it.name,
+            price: Number(it.price),
+            discountPercentage: 0,
+            thumbnail: it.thumbnail || it.image,
+            brand: it.category || 'AURA',
+            selectedColor: 'Default',
+            selectedSize: 'Standard',
+            quantity: Number(it.quantity),
+            stock: Number(it.stock || 20),
+          }));
+          setItems(formatted);
+        }
+      }).catch(() => {});
+    }
+  }, [isSignedIn, user?.id]);
 
   useEffect(() => {
     localStorage.setItem('aura_cart_items', JSON.stringify(items));
@@ -54,11 +91,11 @@ export function CartProvider({ children }) {
         {
           cartItemId,
           id: product.id,
-          title: product.title,
+          title: product.title || product.name,
           price: product.price,
           discountPercentage: product.discountPercentage || 0,
-          thumbnail: product.thumbnail || product.images?.[0],
-          brand: product.brand || 'AURA',
+          thumbnail: product.thumbnail || product.image || product.images?.[0],
+          brand: product.brand || product.category || 'AURA',
           selectedColor,
           selectedSize,
           quantity,
@@ -67,11 +104,29 @@ export function CartProvider({ children }) {
       ];
     });
 
-    showToast(`Added "${product.title}" to your cart.`);
+    // Sync to DB cart if user is signed in
+    if (isSignedIn && user?.id && product.id) {
+      cartService.addToCart({
+        clerk_user_id: user.id,
+        product_id: product.id,
+        quantity,
+      }).catch((e) => console.warn('Could not sync item to DB cart:', e.message));
+    }
+
+    showToast(`Added "${product.title || product.name}" to your cart.`);
   };
 
   const removeFromCart = (cartItemId) => {
+    const itemToRemove = items.find((item) => item.cartItemId === cartItemId);
     setItems((prev) => prev.filter((item) => item.cartItemId !== cartItemId));
+
+    if (isSignedIn && user?.id && itemToRemove?.id) {
+      cartService.removeFromCart({
+        clerk_user_id: user.id,
+        product_id: itemToRemove.id,
+      }).catch(() => {});
+    }
+
     showToast('Item removed from cart.', 'info');
   };
 
@@ -80,15 +135,27 @@ export function CartProvider({ children }) {
       removeFromCart(cartItemId);
       return;
     }
+    const targetItem = items.find((item) => item.cartItemId === cartItemId);
     setItems((prev) =>
       prev.map((item) =>
         item.cartItemId === cartItemId ? { ...item, quantity: newQty } : item
       )
     );
+
+    if (isSignedIn && user?.id && targetItem?.id) {
+      cartService.updateQuantity({
+        clerk_user_id: user.id,
+        product_id: targetItem.id,
+        quantity: newQty,
+      }).catch(() => {});
+    }
   };
 
   const clearCart = () => {
     setItems([]);
+    if (isSignedIn && user?.id) {
+      cartService.clearCart(user.id).catch(() => {});
+    }
   };
 
   const applyCoupon = (code) => {
@@ -121,8 +188,8 @@ export function CartProvider({ children }) {
     }
   }
 
-  const shipping = subtotal > 150 || subtotal === 0 ? 0 : 15;
-  const tax = Number(((subtotal - discountAmount) * 0.05).toFixed(2));
+  const shipping = subtotal >= 999 || subtotal === 0 ? 0 : 99;
+  const tax = Number(((subtotal - discountAmount) * 0.18).toFixed(2));
   const total = Math.max(0, Number((subtotal - discountAmount + shipping + tax).toFixed(2)));
 
   return (

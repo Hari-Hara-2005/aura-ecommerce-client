@@ -16,7 +16,7 @@ A client-side e-commerce web application built with **React 19**, **Vite**, **Ta
 2. **Catalog & Products Page (`/products`)**:
    - Dynamic search filtering by keyword.
    - Department / Category navigation chips.
-   - Price range slider ($20 - $2,500).
+   - Price range slider (₹1,500 - ₹2,50,000).
    - Rating filter (4★, 4.5★, 4.8★).
    - Sort by: Price (Low to High / High to Low), Top Rated, Alphabetical.
    - Grid and List view switcher.
@@ -34,12 +34,12 @@ A client-side e-commerce web application built with **React 19**, **Vite**, **Ta
 
 4. **Cart Management (`/cart` & Global Slide-Over Drawer)**:
    - Global flyout drawer accessible from any page.
-   - Free shipping progress bar ($150 threshold).
+   - Free shipping progress bar (₹1,500 threshold).
    - Quantity increment/decrement and item removal.
    - Coupon system with valid codes:
      - `AURA10` — 10% Off Sitewide
      - `WELCOME20` — 20% First Order Welcome Discount
-     - `LUXE50` — $50 Flat Off orders over $300
+     - `LUXE500` — ₹500 Flat Off orders over ₹3,000
    - Automated calculation of subtotal, discounts, shipping, and taxes.
 
 5. **Checkout & Razorpay Payment (`/checkout`)**:
@@ -78,7 +78,7 @@ VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
 VITE_RAZORPAY_KEY_ID=rzp_test_...
 
 # Backend API Base URL
-VITE_API_BASE_URL=https://dummyjson.com
+VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
 ### 3. Run Development Server
