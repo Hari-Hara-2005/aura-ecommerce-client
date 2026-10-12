@@ -275,7 +275,6 @@ export default function Checkout() {
 
     const shippingAddressStr = `${formData.address}, ${formData.city}, ${formData.state} - PIN: ${formData.zipCode || formData.zip || ''}, ${formData.country}`;
 
-    // 1. Cash on Delivery (COD) Flow
     if (paymentMethod === 'cod') {
       try {
         const orderPayload = {
@@ -307,9 +306,7 @@ export default function Checkout() {
       return;
     }
 
-    // 2. Real Razorpay Payment Flow
     try {
-      // Step A: Initiate Order on Backend (PostgreSQL + Razorpay Order API)
       const rzpOrderResponse = await orderService.createRazorpayOrder({
         clerk_user_id: user?.id || null,
         customer: {
@@ -327,11 +324,10 @@ export default function Checkout() {
 
       const { order_id, razorpay_order_id, amount, currency, key_id } = rzpOrderResponse;
 
-      // Step B: Open official Razorpay Checkout popup
       await initiateRazorpayPayment({
         keyId: key_id,
         orderId: razorpay_order_id,
-        amount: amount, // in paise
+        amount: amount,
         currency: currency || 'INR',
         orderName: 'AURA LUXE',
         description: `Order #${order_id.slice(0, 8)}`,
@@ -342,7 +338,6 @@ export default function Checkout() {
         },
         onSuccess: async (paymentResponse) => {
           try {
-            // Step C: Cryptographically verify payment on backend & save to database
             const verificationRes = await orderService.verifyPayment({
               order_id: order_id,
               razorpay_order_id: paymentResponse.razorpay_order_id,
