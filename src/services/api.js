@@ -203,7 +203,6 @@ export const cartService = {
 };
 
 export const orderService = {
-  // Standard / COD order creation
   async createOrder(orderPayload) {
     try {
       const response = await apiClient.post('/orders', orderPayload);
@@ -214,7 +213,6 @@ export const orderService = {
     }
   },
 
-  // Real Razorpay order initiation on backend
   async createRazorpayOrder(orderPayload) {
     try {
       const response = await apiClient.post('/orders/razorpay/create', orderPayload);
@@ -225,7 +223,6 @@ export const orderService = {
     }
   },
 
-  // Real Cryptographic payment verification on backend
   async verifyPayment(paymentDetails) {
     try {
       const response = await apiClient.post('/orders/razorpay/verify', paymentDetails);
