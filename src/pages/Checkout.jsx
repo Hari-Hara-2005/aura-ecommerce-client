@@ -13,8 +13,8 @@ import {
   ArrowRight,
   ShoppingBag,
   AlertCircle,
-  QrCode,
-  X,
+  MapPin,
+  Sparkles,
 } from 'lucide-react';
 import { formatINR } from '../utils/format';
 
@@ -26,6 +26,56 @@ const INDIAN_STATES = [
   'Himachal Pradesh', 'Jammu & Kashmir', 'Chandigarh'
 ];
 
+export function parseShippingAddress(rawStr) {
+  if (!rawStr || typeof rawStr !== 'string') return null;
+  const str = rawStr.trim();
+  if (!str) return null;
+
+ 
+  let zipCode = '';
+  const pinMatch = str.match(/-\s*PIN:\s*(\d{6})/i) || str.match(/\b(\d{6})\b/);
+  if (pinMatch) {
+    zipCode = pinMatch[1];
+  }
+
+  let state = '';
+  const matchedState = INDIAN_STATES.find((s) => new RegExp(`\\b${s}\\b`, 'i').test(str));
+  if (matchedState) {
+    state = matchedState;
+  }
+
+  let beforePin = str;
+  if (str.toLowerCase().includes('- pin:')) {
+    beforePin = str.split(/-\s*PIN:/i)[0].trim();
+  } else if (zipCode) {
+    beforePin = str.replace(new RegExp(`\\b${zipCode}\\b.*$`, 'i'), '').trim();
+  }
+
+  
+  const parts = beforePin
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean);
+
+  if (parts.length > 0 && state && parts[parts.length - 1].toLowerCase() === state.toLowerCase()) {
+    parts.pop();
+  }
+
+  let city = '';
+  if (parts.length > 1) {
+    city = parts.pop();
+  }
+
+  const address = parts.join(', ') || beforePin;
+
+  return {
+    address: address.trim(),
+    city: city.trim(),
+    state: state || 'Maharashtra',
+    zipCode: zipCode.trim(),
+  };
+}
+
 export default function Checkout() {
   const navigate = useNavigate();
   const { items, subtotal, discountAmount, shipping, tax, total, clearCart, appliedCoupon, showToast } = useCart();
@@ -35,13 +85,17 @@ export default function Checkout() {
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     email: user?.primaryEmailAddress?.emailAddress || '',
-    phone: '+91 98765 43210',
-    address: 'Flat 402, Sea Green Apartments, Worli',
-    city: 'Mumbai',
+    phone: '',
+    address: '',
+    city: '',
     state: 'Maharashtra',
-    zipCode: '400018',
+    zipCode: '',
     country: 'India',
   });
+
+  const [savedAddressFound, setSavedAddressFound] = useState(false);
+  const [previousOrderInfo, setPreviousOrderInfo] = useState(null);
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
 
   React.useEffect(() => {
     if (user) {
@@ -54,9 +108,57 @@ export default function Checkout() {
     }
   }, [user]);
 
+  
+  React.useEffect(() => {
+    let isMounted = true;
+    async function loadAddressFromPreviousOrder() {
+      if (!user?.id) return;
+      setIsLoadingAddress(true);
+      try {
+        const orders = await orderService.getUserOrders(user.id);
+        if (isMounted && Array.isArray(orders) && orders.length > 0) {
+          const recentOrder = orders.find(
+            (o) => o.shipping_address && o.shipping_address.trim().length > 0
+          );
+          if (recentOrder) {
+            const parsed = parseShippingAddress(recentOrder.shipping_address);
+            if (parsed && (parsed.address || parsed.city)) {
+              setSavedAddressFound(true);
+              setPreviousOrderInfo({
+                id: recentOrder.id,
+                shipping_address: recentOrder.shipping_address,
+                createdAt: recentOrder.createdAt || recentOrder.created_at,
+              });
+              setFormData((prev) => ({
+                ...prev,
+                address: parsed.address || prev.address,
+                city: parsed.city || prev.city,
+                state: parsed.state || prev.state || 'Maharashtra',
+                zipCode: parsed.zipCode || prev.zipCode,
+                phone:
+                  prev.phone ||
+                  recentOrder.customer?.phone ||
+                  recentOrder.customer_phone ||
+                  '',
+              }));
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[Checkout] Failed to load previous order shipping address:', err.message);
+      } finally {
+        if (isMounted) setIsLoadingAddress(false);
+      }
+    }
+
+    loadAddressFromPreviousOrder();
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.id]);
+
   const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showSimulatorModal, setShowSimulatorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   if (items.length === 0) {
@@ -166,10 +268,49 @@ export default function Checkout() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const completeOrder = async (paymentResult) => {
+  const handleCheckoutSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+    setIsProcessing(true);
+
+    const shippingAddressStr = `${formData.address}, ${formData.city}, ${formData.state} - PIN: ${formData.zipCode || formData.zip || ''}, ${formData.country}`;
+
+    // 1. Cash on Delivery (COD) Flow
+    if (paymentMethod === 'cod') {
+      try {
+        const orderPayload = {
+          clerk_user_id: user?.id || null,
+          customer: {
+            ...formData,
+            clerkUserId: user?.id || null,
+          },
+          items: items.map((it) => ({
+            product_id: it.id,
+            quantity: it.quantity,
+            price: it.price,
+          })),
+          total_amount: total,
+          shipping_address: shippingAddressStr,
+          payment_method: 'Cash on Delivery',
+          payment_status: 'Pending',
+        };
+
+        const createdOrder = await orderService.createOrder(orderPayload);
+        clearCart();
+        showToast('Order confirmed with Cash on Delivery!', 'success');
+        navigate(`/order-success/${createdOrder.id}`);
+      } catch (err) {
+        console.error('Error placing COD order:', err);
+        setErrorMessage(err.response?.data?.message || err.message || 'Failed to place order. Please try again.');
+        setIsProcessing(false);
+      }
+      return;
+    }
+
+    // 2. Real Razorpay Payment Flow
     try {
-      const shippingAddressStr = `${formData.address}, ${formData.city}, ${formData.state} - PIN: ${formData.zipCode || formData.zip || ''}, ${formData.country}`;
-      const orderPayload = {
+      // Step A: Initiate Order on Backend (PostgreSQL + Razorpay Order API)
+      const rzpOrderResponse = await orderService.createRazorpayOrder({
         clerk_user_id: user?.id || null,
         customer: {
           ...formData,
@@ -182,90 +323,69 @@ export default function Checkout() {
         })),
         total_amount: total,
         shipping_address: shippingAddressStr,
-        payment_method: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Razorpay',
-        payment_status: paymentMethod === 'cod' ? 'Pending' : 'Paid',
-        pricing: {
-          subtotal,
-          discountAmount,
-          shipping,
-          tax,
-          total,
-          appliedCoupon: appliedCoupon?.code || null,
-        },
-        payment: {
-          gateway: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Razorpay',
-          paymentId: paymentResult.razorpay_payment_id,
-          orderId: paymentResult.razorpay_order_id,
-          signature: paymentResult.razorpay_signature,
-          status: paymentMethod === 'cod' ? 'PENDING' : 'PAID',
-        },
-      };
-
-      const createdOrder = await orderService.createOrder(orderPayload);
-      await orderService.verifyPayment(paymentResult);
-
-      clearCart();
-      showToast('Payment successful! Order confirmed.', 'success');
-      navigate(`/order-success/${createdOrder.id}`);
-    } catch (err) {
-      console.error('Error finalizing order:', err);
-      setErrorMessage('Failed to finalize order on backend. Please try again.');
-      setIsProcessing(false);
-    }
-  };
-
-  const handleCheckoutSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    setIsProcessing(true);
-
-    if (paymentMethod === 'cod') {
-      await completeOrder({
-        razorpay_payment_id: 'cod_pay_' + Date.now(),
-        razorpay_order_id: 'cod_order_' + Date.now(),
-        razorpay_signature: 'cash_on_delivery',
       });
-      return;
+
+      const { order_id, razorpay_order_id, amount, currency, key_id } = rzpOrderResponse;
+
+      // Step B: Open official Razorpay Checkout popup
+      await initiateRazorpayPayment({
+        keyId: key_id,
+        orderId: razorpay_order_id,
+        amount: amount, // in paise
+        currency: currency || 'INR',
+        orderName: 'AURA LUXE',
+        description: `Order #${order_id.slice(0, 8)}`,
+        customer: {
+          name: `${formData.firstName} ${formData.lastName}`.trim(),
+          email: formData.email,
+          phone: formData.phone,
+        },
+        onSuccess: async (paymentResponse) => {
+          try {
+            // Step C: Cryptographically verify payment on backend & save to database
+            const verificationRes = await orderService.verifyPayment({
+              order_id: order_id,
+              razorpay_order_id: paymentResponse.razorpay_order_id,
+              razorpay_payment_id: paymentResponse.razorpay_payment_id,
+              razorpay_signature: paymentResponse.razorpay_signature,
+              amount: total,
+              payment_method: 'Razorpay',
+            });
+
+            if (verificationRes.success) {
+              clearCart();
+              showToast('Payment successful! Order confirmed.', 'success');
+              navigate(`/order-success/${order_id}`);
+            } else {
+              setErrorMessage(verificationRes.message || 'Payment signature verification failed.');
+              setIsProcessing(false);
+            }
+          } catch (verifyErr) {
+            console.error('Payment verification error:', verifyErr);
+            setErrorMessage(
+              verifyErr.response?.data?.message || 'Payment verification failed on backend. Please contact support.'
+            );
+            setIsProcessing(false);
+          }
+        },
+        onFailure: (err) => {
+          console.error('Razorpay payment error:', err);
+          setIsProcessing(false);
+          setErrorMessage(err.description || err.message || 'Payment was declined or failed.');
+          showToast(err.description || 'Payment was declined.', 'error');
+        },
+        onDismiss: () => {
+          setIsProcessing(false);
+          showToast('Payment window closed.', 'info');
+        },
+      });
+    } catch (err) {
+      console.error('Failed to initiate Razorpay order:', err);
+      setIsProcessing(false);
+      setErrorMessage(
+        err.response?.data?.message || err.message || 'Could not initiate Razorpay checkout. Please verify credentials in Backend/.env.'
+      );
     }
-
-    const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
-
-    if (!razorpayKey || razorpayKey === 'rzp_test_placeholder') {
-      setShowSimulatorModal(true);
-      return;
-    }
-
-    initiateRazorpayPayment({
-      amount: total,
-      currency: 'INR',
-      orderName: 'AURA Luxe Purchase',
-      customer: {
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        phone: formData.phone,
-      },
-      onSuccess: async (paymentResponse) => {
-        await completeOrder(paymentResponse);
-      },
-      onFailure: (err) => {
-        console.warn('Razorpay checkout failed, opening fallback simulation modal:', err);
-        setShowSimulatorModal(true);
-      },
-      onDismiss: () => {
-        setIsProcessing(false);
-        showToast('Payment cancelled by user.', 'info');
-      },
-    });
-  };
-
-  const handleSimulatePaymentSuccess = async () => {
-    setShowSimulatorModal(false);
-    setIsProcessing(true);
-    await completeOrder({
-      razorpay_payment_id: 'pay_test_' + Date.now().toString(36),
-      razorpay_order_id: 'order_test_' + Date.now().toString(36),
-      razorpay_signature: 'sig_valid_test_hash_' + Math.random().toString(36).substring(2),
-    });
   };
 
   return (
@@ -346,12 +466,46 @@ export default function Checkout() {
           </div>
 
           <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-5">
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
-              <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs font-bold font-mono">
-                2
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs font-bold font-mono">
+                  2
+                </div>
+                <h2 className="text-base font-bold text-slate-900">Shipping Destination</h2>
               </div>
-              <h2 className="text-base font-bold text-slate-900">Shipping Destination</h2>
+              {savedAddressFound && (
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-semibold">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Autofilled from Previous Order</span>
+                </div>
+              )}
             </div>
+
+            {savedAddressFound && previousOrderInfo && (
+              <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-100 flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2.5 text-indigo-950 min-w-0">
+                  <MapPin className="w-4 h-4 text-indigo-600 shrink-0" />
+                  <span className="truncate">
+                    Address retrieved from your recent order <span className="font-mono font-bold">#{previousOrderInfo.id?.slice(0, 8)}</span>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      address: '',
+                      city: '',
+                      zipCode: '',
+                    }));
+                    setSavedAddressFound(false);
+                  }}
+                  className="shrink-0 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                >
+                  Use a different address
+                </button>
+              </div>
+            )}
 
             <div className="space-y-4">
               <div>
@@ -580,82 +734,6 @@ export default function Checkout() {
         </div>
 
       </form>
-
-      {showSimulatorModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6">
-            
-            <button
-              onClick={() => {
-                setShowSimulatorModal(false);
-                setIsProcessing(false);
-              }}
-              className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold">
-                  R
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-slate-900 text-base">Razorpay Test Gateway</h3>
-                  <p className="text-[11px] text-slate-500">Merchant: AURA Luxe Collective India</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="text-xs text-slate-500 block">Amount</span>
-                <span className="text-base font-bold text-slate-900 font-mono">{formatINR(total)}</span>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3">
-                <QrCode className="w-6 h-6 text-indigo-600 shrink-0" />
-                <div className="text-xs">
-                  <span className="font-bold text-slate-900 block">UPI QR Code & Apps</span>
-                  <span className="text-slate-500 text-[11px]">GPay, PhonePe, Paytm, BHIM</span>
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3">
-                <CreditCard className="w-6 h-6 text-purple-600 shrink-0" />
-                <div className="text-xs">
-                  <span className="font-bold text-slate-900 block">Card (Debit & Credit)</span>
-                  <span className="text-slate-500 text-[11px]">Visa, Mastercard, RuPay, Amex</span>
-                </div>
-              </div>
-            </div>
-
-            <p className="text-[11px] text-slate-600 text-center leading-relaxed bg-indigo-50/50 p-2.5 rounded-xl border border-indigo-100">
-              💡 <strong>Test Mode Note:</strong> This interactive modal lets you test the complete order generation, Axios order persistence, and invoice generation without needing an active merchant account!
-            </p>
-
-            <div className="space-y-2 pt-2">
-              <button
-                onClick={handleSimulatePaymentSuccess}
-                className="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <CheckCircle2 className="w-4 h-4" /> Simulate Successful Payment (Authorized)
-              </button>
-              <button
-                onClick={() => {
-                  setShowSimulatorModal(false);
-                  setIsProcessing(false);
-                  setErrorMessage('Razorpay transaction cancelled or declined by test simulation.');
-                }}
-                className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
-              >
-                Simulate Payment Decline
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }

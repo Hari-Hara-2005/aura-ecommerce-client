@@ -203,13 +203,46 @@ export const cartService = {
 };
 
 export const orderService = {
+  // Standard / COD order creation
   async createOrder(orderPayload) {
     try {
       const response = await apiClient.post('/orders', orderPayload);
       return response.data?.order || response.data;
     } catch (error) {
-      console.error('[orderService.createOrder] Failed to create order in database:', error.message);
+      console.error('[orderService.createOrder] Failed to create order in database:', error.response?.data?.message || error.message);
       throw error;
+    }
+  },
+
+  // Real Razorpay order initiation on backend
+  async createRazorpayOrder(orderPayload) {
+    try {
+      const response = await apiClient.post('/orders/razorpay/create', orderPayload);
+      return response.data;
+    } catch (error) {
+      console.error('[orderService.createRazorpayOrder] Failed to create Razorpay order:', error.response?.data?.message || error.message);
+      throw error;
+    }
+  },
+
+  // Real Cryptographic payment verification on backend
+  async verifyPayment(paymentDetails) {
+    try {
+      const response = await apiClient.post('/orders/razorpay/verify', paymentDetails);
+      return response.data;
+    } catch (error) {
+      console.error('[orderService.verifyPayment] Verification failed:', error.response?.data?.message || error.message);
+      throw error;
+    }
+  },
+
+  async getRazorpayKey() {
+    try {
+      const response = await apiClient.get('/payment/razorpay-key');
+      return response.data?.key_id;
+    } catch (error) {
+      console.warn('[orderService.getRazorpayKey] Could not fetch Razorpay key from backend:', error.message);
+      return import.meta.env.VITE_RAZORPAY_KEY_ID;
     }
   },
 
@@ -232,15 +265,6 @@ export const orderService = {
     } catch (e) {
       console.error(`[orderService.getOrderById] Failed to fetch order ${orderId}:`, e.message);
       return null;
-    }
-  },
-
-  async verifyPayment(paymentDetails) {
-    try {
-      const res = await apiClient.post('/payment/verify', paymentDetails);
-      return res.data;
-    } catch {
-      return { success: true, verifiedAt: new Date().toISOString() };
     }
   },
 };
