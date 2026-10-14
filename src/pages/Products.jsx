@@ -333,11 +333,19 @@ export default function Products() {
                   key={p.id}
                   className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row items-center gap-5 hover:border-indigo-400 hover:shadow-md transition-all"
                 >
-                  <img
-                    src={p.thumbnail || p.images?.[0] || p.image}
-                    alt={p.title || p.name}
-                    className="w-36 h-36 rounded-xl object-cover bg-slate-50 border border-slate-100 shrink-0"
-                  />
+                  <div className="relative w-36 h-36 rounded-xl overflow-hidden shrink-0">
+                    <img
+                      src={p.thumbnail || p.images?.[0] || p.image}
+                      alt={p.title || p.name}
+                      className={`w-full h-full object-cover bg-slate-50 border border-slate-100 ${p.stock !== undefined && Number(p.stock) <= 0 ? 'opacity-85' : ''}`}
+                    />
+                    {p.stock !== undefined && Number(p.stock) <= 0 && (
+                      <span className="absolute top-2 left-2 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-slate-900/90 text-white rounded-lg shadow-md backdrop-blur-md border border-white/10 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                        Out of Stock
+                      </span>
+                    )}
+                  </div>
                   <div className="flex-1 space-y-2 text-center sm:text-left">
                     <div className="flex items-center justify-center sm:justify-start gap-2 text-xs text-slate-500">
                       <span className="uppercase tracking-wider text-indigo-600 font-bold">{p.category || 'Collection'}</span>
@@ -345,6 +353,15 @@ export default function Products() {
                       <span className="text-amber-500 font-semibold flex items-center gap-1">
                         <Star className="w-3.5 h-3.5 fill-current" /> {p.rating ? Number(p.rating).toFixed(1) : '4.8'}
                       </span>
+                      {p.stock !== undefined && Number(p.stock) <= 0 && (
+                        <>
+                          <span>•</span>
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200/80">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                            Out of Stock
+                          </span>
+                        </>
+                      )}
                     </div>
                     <h3 className="text-base font-bold text-slate-900">{p.title || p.name}</h3>
                     <p className="text-xs text-slate-500 line-clamp-2">{p.description}</p>

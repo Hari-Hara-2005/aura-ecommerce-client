@@ -13,6 +13,8 @@ import {
   Check,
   Truck,
   ArrowRight,
+  Ban,
+  AlertCircle,
 } from 'lucide-react';
 
 export default function QuickViewModal({ product, onClose }) {
@@ -37,7 +39,10 @@ export default function QuickViewModal({ product, onClose }) {
     ? (product.price / (1 - discountPercent / 100)).toFixed(2)
     : null;
 
+  const isOutOfStock = product.stock !== undefined && Number(product.stock) <= 0;
+
   const handleAddToCart = () => {
+    if (isOutOfStock) return;
     addToCart(product, quantity, { color: selectedColor, size: selectedSize });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
@@ -64,13 +69,18 @@ export default function QuickViewModal({ product, onClose }) {
               <img
                 src={activeImage}
                 alt={product.title}
-                className="w-full h-full object-cover object-center transition-all duration-300"
+                className={`w-full h-full object-cover object-center transition-all duration-300 ${isOutOfStock ? 'opacity-85' : ''}`}
               />
-              {discountPercent > 0 && (
+              {isOutOfStock ? (
+                <span className="absolute top-4 left-4 px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-slate-900/90 backdrop-blur-md text-white rounded-xl shadow-lg border border-white/10 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                  Out of Stock
+                </span>
+              ) : discountPercent > 0 ? (
                 <span className="absolute top-4 left-4 px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-rose-500 text-white rounded-lg shadow-sm">
                   -{discountPercent}% OFF
                 </span>
-              )}
+              ) : null}
             </div>
 
             {images.length > 1 && (
@@ -118,9 +128,17 @@ export default function QuickViewModal({ product, onClose }) {
                     {formatINR(originalPrice)}
                   </span>
                 )}
-                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  In Stock ({product.stock || 12} left)
-                </span>
+                {isOutOfStock ? (
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 shadow-xs">
+                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                    Out of Stock
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    In Stock ({product.stock !== undefined ? product.stock : 12} left)
+                  </span>
+                )}
               </div>
             </div>
 
@@ -174,30 +192,48 @@ export default function QuickViewModal({ product, onClose }) {
               </div>
             )}
 
+            {isOutOfStock && (
+              <div className="p-3.5 rounded-2xl bg-rose-50/80 border border-rose-200/80 flex items-center gap-2.5 text-xs text-rose-800 shadow-xs">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>This piece is currently out of stock. Adding to bag is paused.</span>
+              </div>
+            )}
+
             <div className="pt-2 flex flex-col sm:flex-row gap-3">
-              <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50 px-2 py-1 shrink-0">
+              <div className={`flex items-center border border-slate-200 rounded-xl bg-slate-50 px-2 py-1 shrink-0 ${isOutOfStock ? 'opacity-50' : ''}`}>
                 <button
+                  disabled={isOutOfStock}
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="p-1.5 text-slate-400 hover:text-slate-900 transition-colors cursor-pointer"
+                  className={`p-1.5 text-slate-400 transition-colors ${isOutOfStock ? 'cursor-not-allowed' : 'hover:text-slate-900 cursor-pointer'}`}
                 >
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="w-10 text-center font-bold text-sm text-slate-900 font-mono">
-                  {quantity}
+                  {isOutOfStock ? 0 : quantity}
                 </span>
                 <button
+                  disabled={isOutOfStock}
                   onClick={() => setQuantity((q) => q + 1)}
-                  className="p-1.5 text-slate-400 hover:text-slate-900 transition-colors cursor-pointer"
+                  className={`p-1.5 text-slate-400 transition-colors ${isOutOfStock ? 'cursor-not-allowed' : 'hover:text-slate-900 cursor-pointer'}`}
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
 
               <button
+                disabled={isOutOfStock}
                 onClick={handleAddToCart}
-                className="flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-xl shadow-indigo-600/25 transition-all cursor-pointer"
+                className={`flex-1 py-3 px-6 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
+                  isOutOfStock
+                    ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed select-none shadow-none'
+                    : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-xl shadow-indigo-600/25 cursor-pointer'
+                }`}
               >
-                {added ? (
+                {isOutOfStock ? (
+                  <>
+                    <Ban className="w-4 h-4 text-rose-500" /> Out of Stock
+                  </>
+                ) : added ? (
                   <>
                     <Check className="w-4 h-4 text-emerald-300" /> Added to Cart!
                   </>

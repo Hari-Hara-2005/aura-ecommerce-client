@@ -70,6 +70,11 @@ export function CartProvider({ children }) {
   const closeToast = () => setToast(null);
 
   const addToCart = (product, quantity = 1, options = {}) => {
+    if (product.stock !== undefined && Number(product.stock) <= 0) {
+      showToast(`"${product.title || product.name}" is currently out of stock.`, 'error');
+      return;
+    }
+
     const selectedColor = options.color || product.colors?.[0] || 'Default';
     const selectedSize = options.size || product.sizes?.[0] || 'Standard';
     const cartItemId = `${product.id}-${selectedColor}-${selectedSize}`;

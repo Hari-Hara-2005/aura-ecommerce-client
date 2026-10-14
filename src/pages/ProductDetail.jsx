@@ -18,6 +18,8 @@ import {
   ArrowLeft,
   Share2,
   MessageSquarePlus,
+  Ban,
+  AlertCircle,
 } from 'lucide-react';
 import axios from 'axios';
 import { formatINR } from '../utils/format';
@@ -145,13 +147,17 @@ export default function ProductDetail() {
     ? (product.price / (1 - discountPercent / 100)).toFixed(2)
     : null;
 
+  const isOutOfStock = product.stock !== undefined && Number(product.stock) <= 0;
+
   const handleAddToCart = () => {
+    if (isOutOfStock) return;
     addToCart(product, quantity, { color: selectedColor, size: selectedSize });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
 
   const handleBuyNow = () => {
+    if (isOutOfStock) return;
     addToCart(product, quantity, { color: selectedColor, size: selectedSize });
     if (!isSignedIn) {
       navigate('/sign-in?redirect_url=/checkout');
@@ -216,13 +222,18 @@ export default function ProductDetail() {
             <img
               src={activeImage}
               alt={product.title}
-              className="w-full h-full object-cover object-center transition-all duration-300"
+              className={`w-full h-full object-cover object-center transition-all duration-300 ${isOutOfStock ? 'opacity-85' : ''}`}
             />
-            {discountPercent > 0 && (
+            {isOutOfStock ? (
+              <span className="absolute top-4 left-4 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider bg-slate-900/90 backdrop-blur-md text-white rounded-xl shadow-lg border border-white/10 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                Out of Stock
+              </span>
+            ) : discountPercent > 0 ? (
               <span className="absolute top-4 left-4 px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-rose-500 text-white rounded-xl shadow-md">
                 Save {discountPercent}%
               </span>
-            )}
+            ) : null}
           </div>
 
           {galleryImages.length > 1 && (
@@ -270,9 +281,17 @@ export default function ProductDetail() {
                   {formatINR(originalPrice)}
                 </span>
               )}
-              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                In Stock ({product.stock || 18} units ready)
-              </span>
+              {isOutOfStock ? (
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                  Out of Stock
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  In Stock ({product.stock !== undefined ? product.stock : 18} units ready)
+                </span>
+              )}
             </div>
           </div>
 
@@ -326,31 +345,54 @@ export default function ProductDetail() {
             </div>
           )}
 
+          {isOutOfStock && (
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-rose-50/90 to-amber-50/70 border border-rose-200/80 shadow-xs flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+              <div className="text-xs space-y-0.5">
+                <p className="font-bold text-rose-900">Piece Currently Unavailable</p>
+                <p className="text-rose-700 leading-relaxed">
+                  This product is sold out and undergoing inventory restock. You can save it to your wishlist to monitor its availability.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-3 pt-2">
             <div className="flex gap-3">
-              <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50 px-3 py-1.5 shrink-0">
+              <div className={`flex items-center border border-slate-200 rounded-xl bg-slate-50 px-3 py-1.5 shrink-0 ${isOutOfStock ? 'opacity-50' : ''}`}>
                 <button
+                  disabled={isOutOfStock}
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="p-1 text-slate-500 hover:text-slate-900 transition-colors"
+                  className={`p-1 text-slate-500 transition-colors ${isOutOfStock ? 'cursor-not-allowed' : 'hover:text-slate-900 cursor-pointer'}`}
                 >
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="w-12 text-center font-bold text-sm text-slate-900 font-mono">
-                  {quantity}
+                  {isOutOfStock ? 0 : quantity}
                 </span>
                 <button
+                  disabled={isOutOfStock}
                   onClick={() => setQuantity((q) => q + 1)}
-                  className="p-1 text-slate-500 hover:text-slate-900 transition-colors"
+                  className={`p-1 text-slate-500 transition-colors ${isOutOfStock ? 'cursor-not-allowed' : 'hover:text-slate-900 cursor-pointer'}`}
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
 
               <button
+                disabled={isOutOfStock}
                 onClick={handleAddToCart}
-                className="flex-1 py-3.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md shadow-indigo-600/20 transition-all cursor-pointer"
+                className={`flex-1 py-3.5 px-6 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
+                  isOutOfStock
+                    ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed select-none shadow-none'
+                    : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 cursor-pointer'
+                }`}
               >
-                {added ? (
+                {isOutOfStock ? (
+                  <>
+                    <Ban className="w-4 h-4 text-rose-500" /> Out of Stock
+                  </>
+                ) : added ? (
                   <>
                     <Check className="w-4 h-4 text-emerald-200" /> Added to Cart!
                   </>
@@ -375,10 +417,23 @@ export default function ProductDetail() {
             </div>
 
             <button
+              disabled={isOutOfStock}
               onClick={handleBuyNow}
-              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
+              className={`w-full py-3.5 px-6 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
+                isOutOfStock
+                  ? 'bg-slate-100 text-slate-400 border border-slate-200/80 cursor-not-allowed select-none shadow-none'
+                  : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md shadow-emerald-600/20 cursor-pointer'
+              }`}
             >
-              <Zap className="w-4 h-4" /> Buy Now with Instant Razorpay Checkout
+              {isOutOfStock ? (
+                <>
+                  <Ban className="w-4 h-4 text-rose-400" /> Direct Checkout Disabled (Out of Stock)
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4" /> Buy Now with Instant Razorpay Checkout
+                </>
+              )}
             </button>
           </div>
 
