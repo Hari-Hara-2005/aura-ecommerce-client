@@ -243,11 +243,14 @@ export const orderService = {
     }
   },
 
-  async getUserOrders(userId) {
+  async getUserOrders(userId, options = {}) {
     try {
-      const res = await apiClient.get('/orders', {
-        params: { clerkId: userId },
-      });
+      const params = {};
+      if (userId) params.clerkId = userId;
+      if (options.email) params.email = options.email;
+      if (options.orderId) params.orderId = options.orderId;
+
+      const res = await apiClient.get('/orders', { params });
       return res.data?.orders || res.data?.data || [];
     } catch (e) {
       console.error('[orderService.getUserOrders] Error fetching from database:', e.message);

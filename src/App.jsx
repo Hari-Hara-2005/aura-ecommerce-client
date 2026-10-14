@@ -19,6 +19,7 @@ import OrderSuccess from './pages/OrderSuccess';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import Profile from './pages/Profile';
+import OrderHistory from './pages/OrderHistory';
 
 export default function App() {
   return (
@@ -39,6 +40,8 @@ export default function App() {
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+                  <Route path="/orders" element={<OrderHistory />} />
+                  <Route path="/order-history" element={<OrderHistory />} />
                   <Route path="/sign-in/*" element={<SignInPage />} />
                   <Route path="/sign-up/*" element={<SignUpPage />} />
                   <Route path="/profile" element={<Profile />} />

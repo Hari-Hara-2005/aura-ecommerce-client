@@ -295,6 +295,13 @@ export default function Checkout() {
         };
 
         const createdOrder = await orderService.createOrder(orderPayload);
+        try {
+          const list = JSON.parse(localStorage.getItem('aura_placed_orders') || '[]');
+          if (createdOrder?.id && !list.includes(createdOrder.id)) {
+            list.unshift(createdOrder.id);
+            localStorage.setItem('aura_placed_orders', JSON.stringify(list));
+          }
+        } catch (_) {}
         clearCart();
         showToast('Order confirmed with Cash on Delivery!', 'success');
         navigate(`/order-success/${createdOrder.id}`);
@@ -348,6 +355,13 @@ export default function Checkout() {
             });
 
             if (verificationRes.success) {
+              try {
+                const list = JSON.parse(localStorage.getItem('aura_placed_orders') || '[]');
+                if (order_id && !list.includes(order_id)) {
+                  list.unshift(order_id);
+                  localStorage.setItem('aura_placed_orders', JSON.stringify(list));
+                }
+              } catch (_) {}
               clearCart();
               showToast('Payment successful! Order confirmed.', 'success');
               navigate(`/order-success/${order_id}`);

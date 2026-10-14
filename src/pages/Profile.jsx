@@ -23,14 +23,27 @@ export default function Profile() {
 
   useEffect(() => {
     async function loadOrders() {
-      if (user?.id) {
-        try {
+      try {
+        let userOrders = [];
+        if (user?.id) {
           const list = await orderService.getUserOrders(user.id);
-          setOrders(Array.isArray(list) ? list : []);
-        } catch (err) {
-          console.error('Failed to load user orders:', err);
-          setOrders([]);
+          if (Array.isArray(list)) userOrders.push(...list);
         }
+        try {
+          const localIds = JSON.parse(localStorage.getItem('aura_placed_orders') || '[]');
+          const missing = localIds.filter((id) => !userOrders.some((o) => o.id === id));
+          if (missing.length > 0) {
+            const extras = await Promise.all(missing.map((id) => orderService.getOrderById(id).catch(() => null)));
+            extras.forEach((e) => {
+              if (e && e.id && !userOrders.some((o) => o.id === e.id)) userOrders.push(e);
+            });
+          }
+        } catch (_) {}
+        userOrders.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        setOrders(userOrders);
+      } catch (err) {
+        console.error('Failed to load user orders:', err);
+        setOrders([]);
       }
     }
     loadOrders();
@@ -44,14 +57,22 @@ export default function Profile() {
         </div>
         <h2 className="text-2xl font-bold text-slate-900">Client Session Required</h2>
         <p className="text-xs text-slate-500">
-          Sign in to view your orders, saved addresses, and concierge settings.
+          Sign in to view your account settings or look up your order history directly.
         </p>
-        <Link
-          to="/sign-in"
-          className="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-xs"
-        >
-          Sign In Now
-        </Link>
+        <div className="flex items-center justify-center gap-3">
+          <Link
+            to="/sign-in"
+            className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-xs"
+          >
+            Sign In Now
+          </Link>
+          <Link
+            to="/orders"
+            className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-colors"
+          >
+            Track Orders
+          </Link>
+        </div>
       </div>
     );
   }
@@ -94,7 +115,7 @@ export default function Profile() {
         </button>
       </div>
 
-      <div className="flex border-b border-slate-200 gap-6">
+      <div className="flex items-center border-b border-slate-200 gap-6">
         <button
           onClick={() => setActiveTab('orders')}
           className={`pb-3 text-sm font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 ${
@@ -115,6 +136,12 @@ export default function Profile() {
         >
           <ShieldCheck className="w-4 h-4 text-indigo-600" /> Security & Gateway
         </button>
+        <Link
+          to="/orders"
+          className="ml-auto pb-3 text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 hover:underline"
+        >
+          Full Order History Portal →
+        </Link>
       </div>
 
       {activeTab === 'orders' && (

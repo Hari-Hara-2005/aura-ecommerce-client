@@ -57,6 +57,7 @@ export default function Navbar() {
         path: `/products?category=${encodeURIComponent(name)}`,
       };
     }),
+    { label: 'Orders', path: '/orders' },
   ];
 
   return (
@@ -112,6 +113,18 @@ export default function Navbar() {
           </form>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              to="/orders"
+              className={`relative p-2.5 rounded-xl transition-all ${
+                location.pathname === '/orders'
+                  ? 'bg-indigo-50 text-indigo-700'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+              title="My Orders & Tracking"
+            >
+              <Package className="w-5 h-5" />
+            </Link>
+
             <Link
               to="/products"
               className="relative p-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all"
@@ -185,11 +198,11 @@ export default function Navbar() {
                           <p className="text-xs text-slate-500 truncate">{user?.primaryEmailAddress?.emailAddress}</p>
                         </div>
                         <Link
-                          to="/profile"
+                          to="/orders"
                           onClick={() => setProfileDropdownOpen(false)}
                           className="flex items-center gap-2 px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-colors font-medium"
                         >
-                          <Package className="w-4 h-4 text-indigo-600" /> My Orders & History
+                          <Package className="w-4 h-4 text-indigo-600" /> My Orders & Tracking
                         </Link>
                         <button
                           onClick={() => {
@@ -256,6 +269,14 @@ export default function Navbar() {
                   <ArrowRight className="w-4 h-4 text-slate-400" />
                 </Link>
               ))}
+              <Link
+                to="/orders"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg flex items-center justify-between"
+              >
+                Order History & Tracking
+                <Package className="w-4 h-4 text-slate-400" />
+              </Link>
               <Link
                 to="/cart"
                 onClick={() => setMobileMenuOpen(false)}
