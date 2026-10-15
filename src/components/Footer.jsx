@@ -60,7 +60,6 @@ export default function Footer() {
               </div>
               <div>
                 <h4 className="text-slate-900 font-semibold text-sm">Razorpay Secured</h4>
-                <p className="text-xs text-slate-500">256-bit SSL encrypted checkout</p>
               </div>
             </div>
 
