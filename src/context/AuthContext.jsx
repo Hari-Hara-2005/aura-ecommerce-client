@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ClerkProvider, useUser, useClerk, SignedIn, SignedOut, UserButton, SignIn, SignUp } from '@clerk/clerk-react';
+import { joinCustomerRoom } from '../services/socket';
 
 const AuthContext = createContext(null);
 
@@ -15,6 +16,12 @@ function FallbackAuthProvider({ children }) {
       return null;
     }
   });
+
+  useEffect(() => {
+    if (demoUser?.id) {
+      joinCustomerRoom(demoUser.id);
+    }
+  }, [demoUser]);
 
   const demoLogin = (role = 'buyer') => {
     const mock = {
@@ -49,6 +56,12 @@ function ClerkBridgeProvider({ children }) {
   const { user, isSignedIn, isLoaded } = useUser();
   const { signOut } = useClerk();
 
+  useEffect(() => {
+    if (user?.id) {
+      joinCustomerRoom(user.id);
+    }
+  }, [user]);
+
   const value = {
     isClerkEnabled: true,
     user: user,
@@ -60,6 +73,7 @@ function ClerkBridgeProvider({ children }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+
 
 export function CustomAuthProvider({ children }) {
   if (isClerkValid) {

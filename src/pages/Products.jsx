@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { productService } from '../services/api';
+import { subscribeClientSocket } from '../services/socket';
 import ProductCard from '../components/ProductCard';
+
 import QuickViewModal from '../components/QuickViewModal';
 import {
   Filter,
@@ -71,6 +73,32 @@ export default function Products() {
     }
     loadProducts();
   }, [selectedCategory, searchQuery]);
+
+  useEffect(() => {
+    const unsubStock = subscribeClientSocket('inventory:stock_updated', (updated) => {
+      if (!updated || !updated.id) return;
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === updated.id
+            ? { ...p, stock: updated.stock !== undefined ? Number(updated.stock) : p.stock }
+            : p
+        )
+      );
+    });
+
+    const unsubProd = subscribeClientSocket('product:updated', (updated) => {
+      if (!updated || !updated.id) return;
+      setProducts((prev) =>
+        prev.map((p) => (p.id === updated.id ? { ...p, ...updated } : p))
+      );
+    });
+
+    return () => {
+      unsubStock();
+      unsubProd();
+    };
+  }, []);
+
 
   const handleCategorySelect = (cat) => {
     setSelectedCategory(cat);

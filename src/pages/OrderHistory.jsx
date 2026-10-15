@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthUser } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { orderService } from '../services/api';
+import { subscribeClientSocket, joinOrderTracking } from '../services/socket';
 import { formatINR } from '../utils/format';
+
 import {
   Package,
   Search,
@@ -107,7 +109,39 @@ export default function OrderHistory() {
 
   useEffect(() => {
     loadUserOrders();
-  }, [user?.id, isSignedIn]);
+
+    // Listen to real-time status updates via WebSocket
+    const unsubStatus = subscribeClientSocket('order:status_updated', (data) => {
+      setOrders((prev) => {
+        const found = prev.some((o) => o.id === data.orderId);
+        if (found) {
+          showToast(`⚡ Order #${String(data.orderId).slice(0, 8).toUpperCase()} updated to ${data.status}!`, 'info');
+          return prev.map((ord) =>
+            ord.id === data.orderId
+              ? {
+                  ...ord,
+                  status: data.status,
+                  payment_status: data.payment_status || ord.payment_status,
+                  updatedAt: data.updated_at || new Date().toISOString(),
+                }
+              : ord
+          );
+        }
+        return prev;
+      });
+    });
+
+    const unsubCreated = subscribeClientSocket('order:created', (newOrder) => {
+      // If order belongs to current customer, reload orders
+      loadUserOrders();
+    });
+
+    return () => {
+      unsubStatus();
+      unsubCreated();
+    };
+  }, [user?.id, isSignedIn, showToast]);
+
 
   const handleCopyOrderId = (id) => {
     navigator.clipboard.writeText(id);
