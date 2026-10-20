@@ -14,6 +14,7 @@ import {
   LogOut,
   Package,
   ArrowRight,
+  User,
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -152,30 +153,12 @@ export default function Navbar() {
             </button>
 
             <div className="relative">
-              {isClerkEnabled ? (
-                <>
+              {isSignedIn ? (
+                user?.id && !user.id.startsWith('usr_demo_') && isClerkEnabled ? (
                   <SignedIn>
                     <UserButton afterSignOutUrl="/" />
                   </SignedIn>
-                  <SignedOut>
-                    <div className="flex items-center gap-2">
-                      <Link
-                        to="/sign-in"
-                        className="text-xs font-semibold px-3 py-2 text-slate-600 hover:text-slate-900 transition-colors"
-                      >
-                        Sign In
-                      </Link>
-                      <Link
-                        to="/sign-up"
-                        className="text-xs font-semibold px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-md shadow-indigo-500/20 transition-all"
-                      >
-                        Sign Up
-                      </Link>
-                    </div>
-                  </SignedOut>
-                </>
-              ) : (
-                isSignedIn ? (
+                ) : (
                   <div className="relative">
                     <button
                       onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
@@ -204,34 +187,41 @@ export default function Navbar() {
                         >
                           <Package className="w-4 h-4 text-indigo-600" /> My Orders & Tracking
                         </Link>
+                        <Link
+                          to="/profile"
+                          onClick={() => setProfileDropdownOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-colors font-medium"
+                        >
+                          <User className="w-4 h-4 text-indigo-600" /> Account Profile
+                        </Link>
                         <button
                           onClick={() => {
                             signOut();
                             setProfileDropdownOpen(false);
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors text-left cursor-pointer font-medium"
+                          className="w-full flex items-center gap-2 px-3 py-2 text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors text-left cursor-pointer font-medium mt-1"
                         >
                           <LogOut className="w-4 h-4" /> Sign Out
                         </button>
                       </div>
                     )}
                   </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Link
-                      to="/sign-in"
-                      className="hidden sm:inline-block text-xs font-semibold px-3 py-2 text-slate-600 hover:text-slate-900 transition-colors"
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      to="/sign-up"
-                      className="text-xs font-semibold px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-md shadow-indigo-500/20 transition-all"
-                    >
-                      Get Started
-                    </Link>
-                  </div>
                 )
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link
+                    to="/sign-in"
+                    className="text-xs font-semibold px-3 py-2 text-slate-600 hover:text-slate-900 transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/sign-up"
+                    className="text-xs font-semibold px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-md shadow-indigo-500/20 transition-all"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
               )}
             </div>
 

@@ -44,7 +44,7 @@ export default function SignUpPage() {
             <span className="font-extrabold text-2xl tracking-wider text-slate-900">AURA LUXE</span>
           </Link>
           <h1 className="text-xl font-bold text-slate-900">
-            {isFromCheckout ? 'Register to Proceed to Payment' : 'Join the Private Atelier'}
+            {isFromCheckout ? 'Register to Proceed to Payment':'Create your account'}
           </h1>
           <p className="text-xs text-slate-500">
             {isFromCheckout

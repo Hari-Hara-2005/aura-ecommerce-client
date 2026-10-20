@@ -53,22 +53,66 @@ function FallbackAuthProvider({ children }) {
 }
 
 function ClerkBridgeProvider({ children }) {
-  const { user, isSignedIn, isLoaded } = useUser();
-  const { signOut } = useClerk();
+  const { user: clerkUser, isSignedIn: isClerkSignedIn, isLoaded } = useUser();
+  const clerk = useClerk();
+
+  const [localDemoUser, setLocalDemoUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_demo_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const activeUser = clerkUser || localDemoUser;
+  const effectiveIsSignedIn = !!isClerkSignedIn || !!localDemoUser;
 
   useEffect(() => {
-    if (user?.id) {
-      joinCustomerRoom(user.id);
+    if (activeUser?.id) {
+      joinCustomerRoom(activeUser.id);
     }
-  }, [user]);
+  }, [activeUser?.id]);
+
+  const loginDemo = (role = 'buyer', customData = {}) => {
+    const defaultEmail = role === 'buyer' ? 'alex.morgan@example.com' : 'jordan.taylor@example.com';
+    const defaultName = role === 'buyer' ? 'Alex Morgan' : 'Jordan Taylor';
+    const email = customData.email || defaultEmail;
+    const fullName = customData.name || (email.includes('@') ? email.split('@')[0] : defaultName);
+    const firstName = fullName.split(' ')[0] || 'User';
+    const lastName = fullName.split(' ').slice(1).join(' ') || '';
+
+    const mock = {
+      id: customData.id || ('usr_demo_' + Math.random().toString(36).substring(2, 9)),
+      firstName,
+      lastName,
+      fullName,
+      primaryEmailAddress: { emailAddress: email },
+      imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+    };
+    setLocalDemoUser(mock);
+    localStorage.setItem('aura_demo_user', JSON.stringify(mock));
+  };
+
+  const handleSignOut = async () => {
+    setLocalDemoUser(null);
+    localStorage.removeItem('aura_demo_user');
+    if (isClerkSignedIn && clerk?.signOut) {
+      try {
+        await clerk.signOut();
+      } catch (err) {
+        console.warn('Clerk signOut error:', err);
+      }
+    }
+  };
 
   const value = {
     isClerkEnabled: true,
-    user: user,
-    isSignedIn: !!isSignedIn,
+    user: activeUser,
+    isSignedIn: effectiveIsSignedIn,
     isLoaded: isLoaded,
-    signOut: () => signOut(),
-    loginDemo: () => {},
+    signOut: handleSignOut,
+    loginDemo: loginDemo,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

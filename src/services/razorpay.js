@@ -33,7 +33,7 @@ export const initiateRazorpayPayment = async ({
     return;
   }
 
-  const razorpayKey = keyId || import.meta.env.VITE_RAZORPAY_KEY_ID;
+  const razorpayKey = keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_S2bpnFcG4OOrZ9';
   if (!razorpayKey) {
     const err = new Error('Razorpay Key ID is not configured. Please provide a valid Razorpay Key.');
     console.error(err);
@@ -48,7 +48,6 @@ export const initiateRazorpayPayment = async ({
     return;
   }
 
-  
   const amountInPaise = Number(amount);
 
   const options = {
@@ -60,6 +59,7 @@ export const initiateRazorpayPayment = async ({
     image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=128&q=80',
     order_id: orderId,
     handler: function (response) {
+      console.log('Payment Success', response);
       onSuccess?.({
         razorpay_payment_id: response.razorpay_payment_id,
         razorpay_order_id: response.razorpay_order_id,
@@ -67,15 +67,15 @@ export const initiateRazorpayPayment = async ({
       });
     },
     prefill: {
-      name: customer.name || '',
-      email: customer.email || '',
+      name: customer.name || 'Chandru',
+      email: customer.email || 'test@example.com',
       contact: customer.phone || '',
     },
     notes: {
       merchant_order_ref: orderName,
     },
     theme: {
-      color: '#6366f1',
+      color: '#3399cc',
       backdrop_color: 'rgba(15, 23, 42, 0.85)',
     },
     modal: {

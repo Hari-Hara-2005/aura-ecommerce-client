@@ -47,6 +47,12 @@ export default function OrderHistory() {
   const [lookupError, setLookupError] = useState('');
 
   const loadUserOrders = async () => {
+    if (!isSignedIn) {
+      setOrders([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       let fetchedOrders = [];
@@ -70,7 +76,7 @@ export default function OrderHistory() {
         }
       }
 
-      // 3. Also check local session placed orders (covers guest & immediate checkout)
+      // 3. Check local session placed orders (only if they match the signed-in user)
       try {
         const localIds = JSON.parse(localStorage.getItem('aura_placed_orders') || '[]');
         if (Array.isArray(localIds) && localIds.length > 0) {
@@ -81,20 +87,17 @@ export default function OrderHistory() {
             );
             for (const ord of fetchedMissing) {
               if (ord && ord.id && !fetchedOrders.some((o) => o.id === ord.id)) {
-                fetchedOrders.push(ord);
+                const matchesUser =
+                  (ord.clerk_user_id && ord.clerk_user_id === user?.id) ||
+                  (userEmail && ord.customer?.email && ord.customer.email.toLowerCase() === userEmail.toLowerCase());
+                if (matchesUser) {
+                  fetchedOrders.push(ord);
+                }
               }
             }
           }
         }
       } catch (_) {}
-
-      // If still empty and in demo mode with no signed-in user, fetch recent orders from DB so user can preview UI
-      if (fetchedOrders.length === 0 && !isSignedIn) {
-        const allRecent = await orderService.getUserOrders(null);
-        if (Array.isArray(allRecent) && allRecent.length > 0) {
-          fetchedOrders = allRecent.slice(0, 5);
-        }
-      }
 
       // Sort by newest first
       fetchedOrders.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
@@ -422,6 +425,35 @@ export default function OrderHistory() {
               <div className="h-20 bg-slate-100 rounded-xl" />
             </div>
           ))}
+        </div>
+      ) : (!isSignedIn && orders.length === 0) ? (
+        <div className="p-12 sm:p-16 rounded-3xl bg-white border border-slate-200 text-center space-y-6 shadow-xs max-w-xl mx-auto my-6">
+          <div className="w-20 h-20 rounded-3xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto text-indigo-600 shadow-sm">
+            <ShieldCheck className="w-10 h-10" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-2xl font-bold text-slate-900">Sign In to View Your Orders</h3>
+            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+              Order history, invoices, and shipment tracking are protected and only visible to the order owner. Sign in to your account to review your purchases and track active deliveries.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              to="/sign-in?redirect_url=/orders"
+              className="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              Sign In to Your Account <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/products"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors flex items-center justify-center"
+            >
+              Explore Products
+            </Link>
+          </div>
+          <div className="pt-4 border-t border-slate-100 text-slate-400 text-[11px]">
+            Placed an order without an account? Enter your Order UUID or checkout email in the "Lookup Specific Order" search bar above.
+          </div>
         </div>
       ) : filteredOrders.length === 0 ? (
         <div className="p-16 rounded-3xl bg-white border border-slate-200 text-center space-y-5 shadow-xs">

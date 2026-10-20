@@ -58,15 +58,15 @@ export default function SignInPage() {
         </div>
 
         {isClerkValid ? (
-          <div className="flex justify-center bg-white p-6 rounded-3xl border border-slate-200 shadow-xl">
-            <SignIn
-              routing="path"
-              path="/sign-in"
-              signUpUrl={`/sign-up?redirect_url=${encodeURIComponent(redirectUrl)}`}
-              fallbackRedirectUrl={redirectUrl}
-              forceRedirectUrl={redirectUrl}
-            />
-          </div>
+            <div className="flex justify-center bg-white p-6 rounded-3xl border border-slate-200 shadow-xl">
+              <SignIn
+                routing="path"
+                path="/sign-in"
+                signUpUrl={`/sign-up?redirect_url=${encodeURIComponent(redirectUrl)}`}
+                fallbackRedirectUrl={redirectUrl}
+                forceRedirectUrl={redirectUrl}
+              />
+            </div>
         ) : (
           <div className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
             
@@ -97,8 +97,8 @@ export default function SignInPage() {
               <span className="bg-white px-3 text-[11px] text-slate-400 uppercase tracking-wider absolute">
                 or with credentials
               </span>
-            </div>
-
+          </div>
+            
             <form onSubmit={handleDemoSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
