@@ -41,7 +41,6 @@ export default function OrderHistory() {
   const [copiedId, setCopiedId] = useState(null);
   const [trackingModalOrder, setTrackingModalOrder] = useState(null);
 
-  // Manual lookup state (for guest or specific order lookups)
   const [lookupQuery, setLookupQuery] = useState('');
   const [lookupLoading, setLookupLoading] = useState(false);
   const [lookupError, setLookupError] = useState('');
@@ -57,13 +56,11 @@ export default function OrderHistory() {
     try {
       let fetchedOrders = [];
 
-      // 1. Fetch by user clerk ID if available
       if (user?.id) {
         const byUser = await orderService.getUserOrders(user.id);
         if (Array.isArray(byUser)) fetchedOrders.push(...byUser);
       }
 
-      // 2. Also check if user has an email and query by email
       const userEmail = user?.primaryEmailAddress?.emailAddress;
       if (userEmail) {
         const byEmail = await orderService.getUserOrders(null, { email: userEmail });
@@ -76,7 +73,6 @@ export default function OrderHistory() {
         }
       }
 
-      // 3. Check local session placed orders (only if they match the signed-in user)
       try {
         const localIds = JSON.parse(localStorage.getItem('aura_placed_orders') || '[]');
         if (Array.isArray(localIds) && localIds.length > 0) {
@@ -99,7 +95,6 @@ export default function OrderHistory() {
         }
       } catch (_) {}
 
-      // Sort by newest first
       fetchedOrders.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
       setOrders(fetchedOrders);
     } catch (err) {
@@ -113,7 +108,6 @@ export default function OrderHistory() {
   useEffect(() => {
     loadUserOrders();
 
-    // Listen to real-time status updates via WebSocket
     const unsubStatus = subscribeClientSocket('order:status_updated', (data) => {
       setOrders((prev) => {
         const found = prev.some((o) => o.id === data.orderId);
@@ -135,7 +129,6 @@ export default function OrderHistory() {
     });
 
     const unsubCreated = subscribeClientSocket('order:created', (newOrder) => {
-      // If order belongs to current customer, reload orders
       loadUserOrders();
     });
 
@@ -144,7 +137,6 @@ export default function OrderHistory() {
       unsubCreated();
     };
   }, [user?.id, isSignedIn, showToast]);
-
 
   const handleCopyOrderId = (id) => {
     navigator.clipboard.writeText(id);
@@ -175,12 +167,10 @@ export default function OrderHistory() {
     try {
       let found = null;
 
-      // Check if it's an order UUID
       if (query.includes('-') || query.length >= 8) {
         found = await orderService.getOrderById(query);
       }
 
-      // If not found by ID, try looking up by email
       if (!found) {
         const byEmail = await orderService.getUserOrders(null, { email: query });
         if (Array.isArray(byEmail) && byEmail.length > 0) {
@@ -212,7 +202,6 @@ export default function OrderHistory() {
     }
   };
 
-  // Filter and search
   const filteredOrders = orders.filter((order) => {
     const q = searchQuery.toLowerCase().trim();
     const matchesSearch =
@@ -232,7 +221,6 @@ export default function OrderHistory() {
     return matchesSearch && matchesStatus;
   });
 
-  // Calculate statistics
   const totalSpent = orders.reduce((acc, o) => acc + Number(o.pricing?.total || o.total_amount || 0), 0);
   const activeOrdersCount = orders.filter((o) => {
     const st = (o.status || '').toUpperCase();
@@ -273,7 +261,6 @@ export default function OrderHistory() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 text-slate-900">
       
-      {/* Header Banner */}
       <div className="relative rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-8 sm:p-12 overflow-hidden shadow-2xl border border-slate-800">
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 max-w-2xl space-y-3">
@@ -290,7 +277,6 @@ export default function OrderHistory() {
         </div>
       </div>
 
-      {/* Metrics Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
@@ -333,11 +319,9 @@ export default function OrderHistory() {
         </div>
       </div>
 
-      {/* Search, Filter & Quick Lookup Bar */}
       <div className="p-6 rounded-3xl bg-white border border-slate-200/90 shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
           
-          {/* Status Tabs */}
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
             {[
               { id: 'ALL', label: `All Orders (${orders.length})` },
@@ -359,7 +343,6 @@ export default function OrderHistory() {
             ))}
           </div>
 
-          {/* Search bar inside orders */}
           <div className="relative w-full md:w-72">
             <input
               type="text"
@@ -372,7 +355,6 @@ export default function OrderHistory() {
           </div>
         </div>
 
-        {/* Quick Order Lookup Form (e.g. for guest / email lookups) */}
         <div className="pt-4 border-t border-slate-100">
           <form onSubmit={handleManualLookup} className="flex flex-col sm:flex-row gap-3 items-center">
             <span className="text-xs text-slate-500 font-medium shrink-0 flex items-center gap-1.5">
@@ -413,7 +395,6 @@ export default function OrderHistory() {
         </div>
       </div>
 
-      {/* Orders List Content */}
       {loading ? (
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
@@ -506,7 +487,6 @@ export default function OrderHistory() {
                 key={order.id}
                 className="rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all overflow-hidden"
               >
-                {/* Order Card Header */}
                 <div className="p-5 sm:p-6 bg-slate-50/70 border-b border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -564,7 +544,6 @@ export default function OrderHistory() {
                   </div>
                 </div>
 
-                {/* Items List in this order */}
                 <div className="p-5 sm:p-6 space-y-4">
                   <div className="space-y-3">
                     {order.items?.map((item, idx) => (
@@ -609,7 +588,6 @@ export default function OrderHistory() {
                     ))}
                   </div>
 
-                  {/* Order Footer Actions */}
                   <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <span className="text-xs text-slate-500 flex items-center gap-1.5">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
@@ -641,7 +619,6 @@ export default function OrderHistory() {
         </div>
       )}
 
-      {/* Package Tracking Timeline Modal */}
       {trackingModalOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
           <div className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative space-y-6">
@@ -664,7 +641,6 @@ export default function OrderHistory() {
               </p>
             </div>
 
-            {/* Visual Stepper */}
             <div className="space-y-6 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-0.5 before:bg-indigo-100">
               <div className="flex items-start gap-4 relative">
                 <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md">

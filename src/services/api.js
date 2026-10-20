@@ -244,7 +244,6 @@ export const orderService = {
   },
 
   async getUserOrders(userId, options = {}) {
-    // SECURITY: Never query database orders without an owner identifier
     if (!userId && !options.email && !options.orderId) {
       return [];
     }

@@ -8,9 +8,6 @@ const SOCKET_URL =
 
 let socket = null;
 
-/**
- * Get or initialize singleton Socket.io client instance for storefront
- */
 export function getClientSocket() {
   if (!socket) {
     socket = io(SOCKET_URL, {
@@ -26,7 +23,6 @@ export function getClientSocket() {
     socket.on('connect', () => {
       console.log('[Client WS] Connected to backend WebSocket. Socket ID:', socket.id);
       
-      // Auto join customer room if saved in localStorage
       try {
         const savedUser = JSON.parse(localStorage.getItem('aura_client_user') || '{}');
         const userId = savedUser.id || savedUser.clerk_user_id || savedUser.clerkId;
@@ -44,9 +40,6 @@ export function getClientSocket() {
   return socket;
 }
 
-/**
- * Join customer room for real-time order tracking
- */
 export function joinCustomerRoom(userId) {
   const s = getClientSocket();
   if (s && userId) {
@@ -54,9 +47,6 @@ export function joinCustomerRoom(userId) {
   }
 }
 
-/**
- * Join individual order room
- */
 export function joinOrderTracking(orderId) {
   const s = getClientSocket();
   if (s && orderId) {
@@ -64,9 +54,6 @@ export function joinOrderTracking(orderId) {
   }
 }
 
-/**
- * Subscribe to client-side websocket event
- */
 export function subscribeClientSocket(event, callback) {
   const s = getClientSocket();
   s.on(event, callback);
