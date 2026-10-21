@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CustomAuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -23,11 +24,12 @@ import OrderHistory from './pages/OrderHistory';
 
 export default function App() {
   return (
-    <CustomAuthProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <BrowserRouter>
-            <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-indigo-600 selection:text-white">
+    <ThemeProvider>
+      <CustomAuthProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <BrowserRouter>
+              <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#090D1A] dark:text-slate-100 flex flex-col font-sans selection:bg-indigo-600 selection:text-white transition-colors duration-200">
               <ClerkBanner />
 
               <Navbar />
@@ -59,5 +61,6 @@ export default function App() {
         </WishlistProvider>
       </CartProvider>
     </CustomAuthProvider>
+  </ThemeProvider>
   );
 }

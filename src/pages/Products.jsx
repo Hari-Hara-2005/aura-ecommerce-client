@@ -3,20 +3,15 @@ import { useSearchParams } from 'react-router-dom';
 import { productService } from '../services/api';
 import { subscribeClientSocket } from '../services/socket';
 import ProductCard from '../components/ProductCard';
-
 import QuickViewModal from '../components/QuickViewModal';
 import {
   Filter,
-  SlidersHorizontal,
   Search,
   Grid3X3,
   List,
   RotateCcw,
-  Sparkles,
-  ChevronDown,
   Star,
 } from 'lucide-react';
-
 import { formatINR } from '../utils/format';
 
 export default function Products() {
@@ -99,7 +94,6 @@ export default function Products() {
     };
   }, []);
 
-
   const handleCategorySelect = (cat) => {
     setSelectedCategory(cat);
     const newParams = new URLSearchParams(searchParams);
@@ -145,39 +139,40 @@ export default function Products() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      <div className="relative rounded-3xl bg-gradient-to-r from-indigo-50 via-white to-purple-50 border border-indigo-100/90 p-8 sm:p-12 overflow-hidden shadow-xs">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none" />
+      {/* Catalog Hero Banner */}
+      <div className="relative rounded-3xl bg-gradient-to-r from-violet-600/10 via-indigo-600/10 to-pink-600/10 dark:from-violet-950/40 dark:via-indigo-950/30 dark:to-slate-900/60 border border-violet-200/60 dark:border-violet-900/40 p-8 sm:p-12 overflow-hidden backdrop-blur-xl">
+        <div className="absolute -right-16 -top-16 w-80 h-80 bg-violet-500/15 dark:bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-2xl space-y-3 relative z-10">
-          <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider bg-violet-600 text-white px-3 py-1 rounded-full shadow-sm shadow-violet-500/30">
             Catalog & Collections
           </span>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {selectedCategory === 'all'
               ? 'Complete Collection'
               : `${selectedCategory.toUpperCase()} DROP`}
           </h1>
-          <p className="text-sm text-slate-600 leading-relaxed">
-            Discover our collection of curated pieces fetched directly from your live store database.
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            Discover our collection of curated luxury pieces fetched directly from your store catalog with real-time stock sync.
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <aside className="hidden lg:block space-y-6 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs h-fit sticky top-28">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-            <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
-              <Filter className="w-4 h-4 text-indigo-600" /> Filters
+        <aside className="hidden lg:block space-y-6 bg-white/80 dark:bg-slate-900/70 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm backdrop-blur-xl h-fit sticky top-28">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-200/80 dark:border-slate-800">
+            <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+              <Filter className="w-4 h-4 text-violet-600 dark:text-violet-400" /> Filters
             </h3>
             <button
               onClick={handleResetFilters}
-              className="text-xs text-slate-500 hover:text-indigo-600 flex items-center gap-1 transition-colors cursor-pointer"
+              className="text-xs text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center gap-1 transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" /> Reset
             </button>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
               Keyword Search
             </label>
             <div className="relative">
@@ -186,14 +181,14 @@ export default function Products() {
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder="Filter titles..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 placeholder-slate-400 outline-none focus:bg-white focus:border-indigo-500 transition-colors"
+                className="w-full bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3 py-2 pl-9 text-xs text-slate-900 dark:text-white placeholder-slate-400 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
               Departments
             </label>
             <div className="space-y-1 max-h-56 overflow-y-auto pr-1">
@@ -201,8 +196,8 @@ export default function Products() {
                 onClick={() => handleCategorySelect('all')}
                 className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   selectedCategory === 'all'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/25'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`}
               >
                 All Departments
@@ -217,8 +212,8 @@ export default function Products() {
                     onClick={() => handleCategorySelect(catName)}
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium capitalize transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-indigo-600 text-white font-semibold shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                        ? 'bg-violet-600 text-white font-semibold shadow-sm shadow-violet-500/25'
+                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                     }`}
                   >
                     {catName.replace(/-/g, ' ')}
@@ -228,10 +223,10 @@ export default function Products() {
             </div>
           </div>
 
-          <div className="space-y-2 pt-2 border-t border-slate-100">
+          <div className="space-y-2 pt-2 border-t border-slate-200/80 dark:border-slate-800">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-700">Max Price</span>
-              <span className="font-mono text-indigo-600 font-bold">{formatINR(maxPrice)}</span>
+              <span className="font-semibold text-slate-700 dark:text-slate-300">Max Price</span>
+              <span className="font-mono text-violet-600 dark:text-violet-400 font-bold">{formatINR(maxPrice)}</span>
             </div>
             <input
               type="range"
@@ -240,7 +235,7 @@ export default function Products() {
               step="500"
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full accent-indigo-600 bg-slate-200 h-1.5 rounded-lg cursor-pointer"
+              className="w-full accent-violet-600 bg-slate-200 dark:bg-slate-700 h-1.5 rounded-lg cursor-pointer"
             />
             <div className="flex justify-between text-[11px] text-slate-400 font-mono">
               <span>₹500</span>
@@ -248,8 +243,8 @@ export default function Products() {
             </div>
           </div>
 
-          <div className="space-y-2 pt-2 border-t border-slate-100">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+          <div className="space-y-2 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
               Minimum Rating
             </label>
             <div className="grid grid-cols-4 gap-1.5">
@@ -257,10 +252,10 @@ export default function Products() {
                 <button
                   key={rating}
                   onClick={() => setMinRating(rating)}
-                  className={`p-1.5 rounded-lg text-xs font-semibold border text-center transition-all cursor-pointer ${
+                  className={`p-1.5 rounded-xl text-xs font-semibold border text-center transition-all cursor-pointer ${
                     minRating === rating
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-violet-600 border-violet-600 text-white shadow-sm shadow-violet-500/25'
+                      : 'bg-white dark:bg-slate-800/70 border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
                   {rating === 0 ? 'Any' : `${rating}★`}
@@ -271,21 +266,21 @@ export default function Products() {
         </aside>
 
         <div className="lg:col-span-3 space-y-6">
-          <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
-            <div className="text-xs text-slate-500">
-              Showing <span className="text-slate-900 font-bold">{filteredProducts.length}</span> pieces
+          <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 shadow-sm backdrop-blur-xl flex flex-wrap items-center justify-between gap-4">
+            <div className="text-xs text-slate-500 dark:text-slate-400">
+              Showing <span className="text-slate-900 dark:text-white font-bold">{filteredProducts.length}</span> pieces
               {selectedCategory !== 'all' && (
-                <> in <span className="text-indigo-600 font-semibold uppercase">{selectedCategory}</span></>
+                <> in <span className="text-violet-600 dark:text-violet-400 font-semibold uppercase">{selectedCategory}</span></>
               )}
             </div>
 
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-500 hidden sm:inline">Sort:</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">Sort:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-xl px-3 py-2 outline-none focus:bg-white focus:border-indigo-500 cursor-pointer"
+                  className="bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/80 text-slate-900 dark:text-white text-xs rounded-xl px-3 py-2 outline-none focus:border-violet-500 cursor-pointer"
                 >
                   <option value="default">Featured / Default</option>
                   <option value="price-low">Price: Low to High</option>
@@ -295,11 +290,11 @@ export default function Products() {
                 </select>
               </div>
 
-              <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-0.5">
+              <div className="flex items-center border border-slate-200 dark:border-slate-700/80 rounded-xl bg-slate-50 dark:bg-slate-800/70 p-0.5">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                    viewMode === 'grid' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-500 hover:text-slate-900'
+                    viewMode === 'grid' ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/25' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                   title="Grid view"
                 >
@@ -308,7 +303,7 @@ export default function Products() {
                 <button
                   onClick={() => setViewMode('list')}
                   className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                    viewMode === 'list' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-500 hover:text-slate-900'
+                    viewMode === 'list' ? 'bg-violet-600 text-white shadow-sm shadow-violet-500/25' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                   title="List view"
                 >
@@ -321,25 +316,25 @@ export default function Products() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="rounded-2xl bg-white border border-slate-200 p-4 animate-pulse space-y-4 shadow-xs">
-                  <div className="aspect-square bg-slate-100 rounded-xl" />
-                  <div className="h-4 bg-slate-100 rounded w-3/4" />
-                  <div className="h-4 bg-slate-100 rounded w-1/3" />
+                <div key={i} className="rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 p-4 animate-pulse space-y-4">
+                  <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-xl" />
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4" />
+                  <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/3" />
                 </div>
               ))}
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="p-16 rounded-3xl bg-white border border-slate-200 text-center space-y-4 shadow-xs">
-              <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto text-indigo-600">
+            <div className="p-16 rounded-3xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 text-center space-y-4">
+              <div className="w-16 h-16 rounded-2xl bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center mx-auto">
                 <Search className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">No pieces match your criteria</h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">No pieces match your criteria</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
                 Try expanding your price range, clearing the search query, or selecting another department.
               </p>
               <button
                 onClick={handleResetFilters}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-md transition-colors cursor-pointer"
+                className="px-5 py-2.5 bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-violet-500/25 cursor-pointer"
               >
                 Reset All Filters
               </button>
@@ -359,24 +354,23 @@ export default function Products() {
               {filteredProducts.map((p) => (
                 <div
                   key={p.id}
-                  className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row items-center gap-5 hover:border-indigo-400 hover:shadow-md transition-all"
+                  className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 flex flex-col sm:flex-row items-center gap-5 hover:border-violet-500/60 dark:hover:border-violet-500/60 transition-all shadow-sm"
                 >
                   <div className="relative w-36 h-36 rounded-xl overflow-hidden shrink-0">
                     <img
                       src={p.thumbnail || p.images?.[0] || p.image}
                       alt={p.title || p.name}
-                      className={`w-full h-full object-cover bg-slate-50 border border-slate-100 ${p.stock !== undefined && Number(p.stock) <= 0 ? 'opacity-85' : ''}`}
+                      className={`w-full h-full object-cover bg-slate-100 dark:bg-slate-800 ${p.stock !== undefined && Number(p.stock) <= 0 ? 'opacity-60 grayscale' : ''}`}
                     />
                     {p.stock !== undefined && Number(p.stock) <= 0 && (
-                      <span className="absolute top-2 left-2 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-slate-900/90 text-white rounded-lg shadow-md backdrop-blur-md border border-white/10 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                      <span className="absolute top-2 left-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-rose-500 text-white rounded-md shadow">
                         Out of Stock
                       </span>
                     )}
                   </div>
                   <div className="flex-1 space-y-2 text-center sm:text-left">
-                    <div className="flex items-center justify-center sm:justify-start gap-2 text-xs text-slate-500">
-                      <span className="uppercase tracking-wider text-indigo-600 font-bold">{p.category || 'Collection'}</span>
+                    <div className="flex items-center justify-center sm:justify-start gap-2 text-xs text-slate-500 dark:text-slate-400">
+                      <span className="uppercase tracking-wider text-violet-600 dark:text-violet-400 font-bold">{p.category || 'Collection'}</span>
                       <span>•</span>
                       <span className="text-amber-500 font-semibold flex items-center gap-1">
                         <Star className="w-3.5 h-3.5 fill-current" /> {p.rating ? Number(p.rating).toFixed(1) : '4.8'}
@@ -384,23 +378,22 @@ export default function Products() {
                       {p.stock !== undefined && Number(p.stock) <= 0 && (
                         <>
                           <span>•</span>
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200/80">
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                          <span className="text-[10px] font-bold text-rose-500 uppercase">
                             Out of Stock
                           </span>
                         </>
                       )}
                     </div>
-                    <h3 className="text-base font-bold text-slate-900">{p.title || p.name}</h3>
-                    <p className="text-xs text-slate-500 line-clamp-2">{p.description}</p>
-                    <div className="text-lg font-bold text-slate-900 font-mono">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">{p.title || p.name}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">{p.description}</p>
+                    <div className="text-lg font-bold text-slate-900 dark:text-white font-mono">
                       {formatINR(p.price)}
                     </div>
                   </div>
                   <div className="shrink-0 flex sm:flex-col gap-2 w-full sm:w-auto">
                     <button
                       onClick={() => setQuickViewProduct(p)}
-                      className="flex-1 sm:flex-none px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer shadow-xs"
+                      className="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-violet-500/25 cursor-pointer"
                     >
                       Quick View
                     </button>

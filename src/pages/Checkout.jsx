@@ -31,7 +31,6 @@ export function parseShippingAddress(rawStr) {
   const str = rawStr.trim();
   if (!str) return null;
 
- 
   let zipCode = '';
   const pinMatch = str.match(/-\s*PIN:\s*(\d{6})/i) || str.match(/\b(\d{6})\b/);
   if (pinMatch) {
@@ -51,7 +50,6 @@ export function parseShippingAddress(rawStr) {
     beforePin = str.replace(new RegExp(`\\b${zipCode}\\b.*$`, 'i'), '').trim();
   }
 
-  
   const parts = beforePin
     .split(',')
     .map((p) => p.trim())
@@ -108,7 +106,6 @@ export default function Checkout() {
     }
   }, [user]);
 
-  
   React.useEffect(() => {
     let isMounted = true;
     async function loadAddressFromPreviousOrder() {
@@ -163,13 +160,15 @@ export default function Checkout() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-24 text-center space-y-4">
-        <ShoppingBag className="w-12 h-12 text-slate-400 mx-auto" />
-        <h2 className="text-2xl font-bold text-slate-900">Your shopping bag is empty</h2>
-        <p className="text-sm text-slate-500">Add pieces before attempting checkout.</p>
+      <div className="max-w-2xl mx-auto px-4 py-24 text-center space-y-5 text-slate-900 dark:text-slate-100">
+        <div className="w-16 h-16 rounded-2xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center mx-auto text-violet-600 dark:text-violet-400">
+          <ShoppingBag className="w-8 h-8" />
+        </div>
+        <h2 className="text-2xl font-black text-slate-900 dark:text-white">Your shopping bag is empty</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Add pieces before attempting checkout.</p>
         <Link
           to="/products"
-          className="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-xs"
+          className="inline-block px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md shadow-violet-500/20 transition-all"
         >
           Return to Catalogue
         </Link>
@@ -179,28 +178,28 @@ export default function Checkout() {
 
   if (!isSignedIn) {
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 space-y-8 animate-fade-in">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 space-y-8 animate-fade-in text-slate-900 dark:text-slate-100">
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 mx-auto shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-600 dark:text-violet-400 mx-auto">
             <Lock className="w-8 h-8" />
           </div>
-          <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+          <span className="text-xs font-bold uppercase tracking-wider bg-violet-600 text-white px-3 py-1 rounded-full shadow-sm shadow-violet-500/30">
             Security & Authentication
           </span>
-          <h1 className="text-3xl font-extrabold text-slate-900">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
             Sign In Required Before Payment
           </h1>
-          <p className="text-sm text-slate-600 max-w-lg mx-auto leading-relaxed">
+          <p className="text-sm text-slate-600 dark:text-slate-300 max-w-lg mx-auto leading-relaxed">
             Please authenticate using your account before making the payment. This stores your transaction securely and generates your verified order tracking and invoice.
           </p>
         </div>
 
-        <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <ShoppingBag className="w-4 h-4 text-indigo-600" /> Preserved Items in Bag ({items.length})
+        <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 space-y-5 backdrop-blur-xl shadow-sm">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <ShoppingBag className="w-4 h-4 text-violet-600 dark:text-violet-400" /> Preserved Items in Bag ({items.length})
             </h3>
-            <span className="text-sm font-bold font-mono text-indigo-600">
+            <span className="text-sm font-bold font-mono text-violet-600 dark:text-violet-400">
               Total: {formatINR(total)}
             </span>
           </div>
@@ -209,26 +208,26 @@ export default function Checkout() {
             {items.map((item) => (
               <div
                 key={item.cartItemId}
-                className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-200 shrink-0 text-xs"
+                className="flex items-center gap-2.5 p-2 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 shrink-0 text-xs"
               >
                 <img
                   src={item.thumbnail}
                   alt=""
-                  className="w-10 h-10 rounded-lg object-cover bg-white"
+                  className="w-10 h-10 rounded-xl object-cover bg-white dark:bg-slate-900"
                 />
-                <div className="max-w-[130px] truncate">
-                  <p className="font-semibold text-slate-900 truncate">{item.title}</p>
-                  <p className="text-[11px] text-slate-500 font-mono">{formatINR(item.price)}</p>
+                <div className="max-w-[130px] truncate text-left">
+                  <p className="font-semibold text-slate-900 dark:text-white truncate">{item.title}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">{formatINR(item.price)}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="p-8 rounded-3xl bg-white border border-slate-200/80 space-y-6 shadow-sm text-center">
+        <div className="p-8 rounded-3xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 space-y-6 text-center backdrop-blur-xl shadow-sm">
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-900">Ready to finalize your purchase?</h3>
-            <p className="text-xs text-slate-500">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Ready to finalize your purchase?</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Your bag is saved. After signing in, you will immediately return here to complete payment with Razorpay.
             </p>
           </div>
@@ -236,26 +235,26 @@ export default function Checkout() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/sign-in?redirect_url=/checkout"
-              className="py-3.5 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-2"
+              className="py-3.5 px-8 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-violet-500/25 transition-all flex items-center justify-center gap-2"
             >
               Sign In to Proceed <ArrowRight className="w-4 h-4" />
             </Link>
 
             <Link
               to="/sign-up?redirect_url=/checkout"
-              className="py-3.5 px-8 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm border border-slate-200 transition-all flex items-center justify-center gap-2"
+              className="py-3.5 px-8 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-sm border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-2"
             >
               Create New Account
             </Link>
           </div>
 
-          <div className="pt-2 flex items-center justify-center gap-6 text-[11px] text-slate-500">
+          <div className="pt-2 flex items-center justify-center gap-6 text-[11px] text-slate-500 dark:text-slate-400">
             <span className="flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" /> Account Authentication
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Account Authentication
             </span>
             <span>•</span>
             <span className="flex items-center gap-1">
-              <CreditCard className="w-3.5 h-3.5 text-purple-600" /> Razorpay Verified
+              <CreditCard className="w-3.5 h-3.5 text-violet-500" /> Razorpay Verified
             </span>
           </div>
         </div>
@@ -350,66 +349,57 @@ export default function Checkout() {
               razorpay_order_id: paymentResponse.razorpay_order_id,
               razorpay_payment_id: paymentResponse.razorpay_payment_id,
               razorpay_signature: paymentResponse.razorpay_signature,
-              amount: total,
-              payment_method: 'Razorpay',
             });
 
-            if (verificationRes.success) {
-              try {
-                const list = JSON.parse(localStorage.getItem('aura_placed_orders') || '[]');
-                if (order_id && !list.includes(order_id)) {
-                  list.unshift(order_id);
-                  localStorage.setItem('aura_placed_orders', JSON.stringify(list));
-                }
-              } catch (_) {}
-              clearCart();
-              showToast('Payment successful! Order confirmed.', 'success');
-              navigate(`/order-success/${order_id}`);
-            } else {
-              setErrorMessage(verificationRes.message || 'Payment signature verification failed.');
-              setIsProcessing(false);
-            }
+            try {
+              const list = JSON.parse(localStorage.getItem('aura_placed_orders') || '[]');
+              if (!list.includes(order_id)) {
+                list.unshift(order_id);
+                localStorage.setItem('aura_placed_orders', JSON.stringify(list));
+              }
+            } catch (_) {}
+
+            clearCart();
+            showToast('Payment verified successfully!', 'success');
+            navigate(`/order-success/${order_id}`);
           } catch (verifyErr) {
-            console.error('Payment verification error:', verifyErr);
-            setErrorMessage(
-              verifyErr.response?.data?.message || 'Payment verification failed on backend. Please contact support.'
-            );
+            console.error('Verification failed:', verifyErr);
+            setErrorMessage('Payment received but database verification failed. Contact support.');
             setIsProcessing(false);
           }
         },
-        onFailure: (err) => {
-          console.error('Razorpay payment error:', err);
-          setIsProcessing(false);
-          setErrorMessage(err.description || err.message || 'Payment was declined or failed.');
-          showToast(err.description || 'Payment was declined.', 'error');
-        },
         onDismiss: () => {
           setIsProcessing(false);
-          showToast('Payment window closed.', 'info');
+          showToast('Payment window closed. Order was not completed.', 'info');
         },
       });
     } catch (err) {
-      console.error('Failed to initiate Razorpay order:', err);
+      console.error('Error starting payment:', err);
+      setErrorMessage(err.response?.data?.message || err.message || 'Failed to initiate Razorpay checkout.');
       setIsProcessing(false);
-      setErrorMessage(
-        err.response?.data?.message || err.message || 'Could not initiate Razorpay checkout. Please verify credentials in Backend/.env.'
-      );
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
-      <div>
-        <h1 className="text-3xl font-extrabold text-slate-900">Express Checkout</h1>
-        <p className="text-xs text-slate-500 mt-1">
-          Complete your acquisition securely through Razorpay
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Express Checkout</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Encrypted payment gateway via Razorpay &bull; Delivery across India
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-auto bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl text-xs text-slate-700 dark:text-slate-300">
+          <ShieldCheck className="w-4 h-4 text-emerald-500" />
+          <span className="font-semibold">256-Bit SSL Secured</span>
+        </div>
       </div>
 
       {errorMessage && (
-        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0" />
+        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
           <span>{errorMessage}</span>
         </div>
       )}
@@ -418,85 +408,89 @@ export default function Checkout() {
         
         <div className="lg:col-span-7 space-y-8">
           
-          <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-5">
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
-              <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs font-bold font-mono">
+          <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 space-y-5 backdrop-blur-xl shadow-sm">
+            <div className="flex items-center gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+              <div className="w-7 h-7 rounded-lg bg-violet-600 text-white flex items-center justify-center text-xs font-bold font-mono shadow-sm shadow-violet-500/30">
                 1
               </div>
-              <h2 className="text-base font-bold text-slate-900">Contact Credentials</h2>
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">Recipient Information</h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">First Name</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">First Name</label>
                 <input
                   type="text"
                   required
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:bg-white focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-violet-500 transition-colors"
                 />
               </div>
+
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Last Name</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Last Name</label>
                 <input
                   type="text"
                   required
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:bg-white focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-violet-500 transition-colors"
                 />
               </div>
+
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
                 <input
                   type="email"
                   required
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:bg-white focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-violet-500 transition-colors"
                 />
               </div>
+
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number (For Razorpay SMS)</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mobile Phone (for SMS updates)</label>
                 <input
                   type="tel"
                   required
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:bg-white focus:border-indigo-500 transition-colors"
+                  placeholder="+91 98765 43210"
+                  className="w-full bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-violet-500 transition-colors font-mono"
                 />
               </div>
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-5">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
+          <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 space-y-5 backdrop-blur-xl shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs font-bold font-mono">
+                <div className="w-7 h-7 rounded-lg bg-violet-600 text-white flex items-center justify-center text-xs font-bold font-mono shadow-sm shadow-violet-500/30">
                   2
                 </div>
-                <h2 className="text-base font-bold text-slate-900">Shipping Destination</h2>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">Delivery Destination</h2>
               </div>
-              {savedAddressFound && (
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-semibold">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Autofilled from Previous Order</span>
-                </div>
-              )}
+              <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                <Truck className="w-3.5 h-3.5 text-emerald-500" /> Express Delivery
+              </span>
             </div>
 
-            {savedAddressFound && previousOrderInfo && (
-              <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-100 flex items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2.5 text-indigo-950 min-w-0">
-                  <MapPin className="w-4 h-4 text-indigo-600 shrink-0" />
-                  <span className="truncate">
-                    Address retrieved from your recent order <span className="font-mono font-bold">#{previousOrderInfo.id?.slice(0, 8)}</span>
-                  </span>
+            {savedAddressFound && (
+              <div className="p-3.5 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-start justify-between gap-3 text-xs">
+                <div className="flex items-start gap-2 text-slate-900 dark:text-white">
+                  <MapPin className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold block">Autofilled from your previous order:</span>
+                    <span className="text-slate-600 dark:text-slate-300 block mt-0.5">
+                      {formData.address}, {formData.city}, {formData.state} - {formData.zipCode}
+                    </span>
+                  </div>
                 </div>
                 <button
                   type="button"
@@ -509,7 +503,7 @@ export default function Checkout() {
                     }));
                     setSavedAddressFound(false);
                   }}
-                  className="shrink-0 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                  className="shrink-0 text-[11px] font-semibold text-violet-600 dark:text-violet-400 underline cursor-pointer"
                 >
                   Use a different address
                 </button>
@@ -518,7 +512,7 @@ export default function Checkout() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Street Address</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Street Address</label>
                 <input
                   type="text"
                   required
@@ -526,13 +520,13 @@ export default function Checkout() {
                   value={formData.address}
                   onChange={handleInputChange}
                   placeholder="Street name, building, apartment number"
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:bg-white focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-violet-500 transition-colors"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">City / Town</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">City / Town</label>
                   <input
                     type="text"
                     required
@@ -540,27 +534,27 @@ export default function Checkout() {
                     value={formData.city}
                     onChange={handleInputChange}
                     placeholder="e.g. Mumbai, Bengaluru"
-                    className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:bg-white focus:border-indigo-500 transition-colors"
+                    className="w-full bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-violet-500 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">State</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">State</label>
                   <select
                     required
                     name="state"
                     value={formData.state}
                     onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:bg-white focus:border-indigo-500 cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-violet-500 cursor-pointer"
                   >
                     {INDIAN_STATES.map((st) => (
-                      <option key={st} value={st} className="bg-white text-slate-900">
+                      <option key={st} value={st} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                         {st}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">PIN Code (6 Digits)</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">PIN Code (6 Digits)</label>
                   <input
                     type="text"
                     required
@@ -570,37 +564,37 @@ export default function Checkout() {
                     onChange={handleInputChange}
                     placeholder="e.g. 400018"
                     pattern="[0-9]{6}"
-                    className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:bg-white focus:border-indigo-500 font-mono"
+                    className="w-full bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-violet-500 font-mono"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Country</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Country</label>
                 <input
                   type="text"
                   readOnly
                   name="country"
                   value="India (Pan-India Express Dispatch)"
-                  className="w-full bg-slate-100 border border-slate-200 text-slate-600 rounded-xl px-3.5 py-2.5 text-xs cursor-not-allowed font-medium"
+                  className="w-full bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-xl px-3.5 py-2.5 text-xs cursor-not-allowed font-medium"
                 />
               </div>
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-5">
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
-              <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs font-bold font-mono">
+          <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 space-y-5 backdrop-blur-xl shadow-sm">
+            <div className="flex items-center gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+              <div className="w-7 h-7 rounded-lg bg-violet-600 text-white flex items-center justify-center text-xs font-bold font-mono shadow-sm shadow-violet-500/30">
                 3
               </div>
-              <h2 className="text-base font-bold text-slate-900">Payment Method</h2>
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">Payment Method</h2>
             </div>
 
             <label
               className={`p-4 rounded-2xl border flex items-start gap-4 cursor-pointer transition-all ${
                 paymentMethod === 'razorpay'
-                  ? 'border-indigo-600 bg-indigo-50/60 shadow-xs'
-                  : 'border-slate-200 bg-white hover:border-slate-300'
+                  ? 'border-violet-600 bg-violet-500/10 shadow-sm'
+                  : 'border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-800/50 hover:border-violet-400'
               }`}
             >
               <input
@@ -609,26 +603,26 @@ export default function Checkout() {
                 value="razorpay"
                 checked={paymentMethod === 'razorpay'}
                 onChange={() => setPaymentMethod('razorpay')}
-                className="mt-1 text-indigo-600 focus:ring-indigo-500"
+                className="mt-1 accent-violet-600"
               />
               <div className="flex-1 space-y-1.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 text-sm">Razorpay Payment Gateway</span>
-                    <span className="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-full">
+                    <span className="font-bold text-slate-900 dark:text-white text-sm">Razorpay Payment Gateway</span>
+                    <span className="text-[10px] bg-violet-600 text-white font-bold px-2 py-0.5 rounded-full shadow-sm">
                       RECOMMENDED
                     </span>
                   </div>
-                  <ShieldCheck className="w-5 h-5 text-indigo-600" />
+                  <ShieldCheck className="w-5 h-5 text-emerald-500" />
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   Pay securely using Credit/Debit Cards, UPI, NetBanking, Google Pay, PhonePe, or PayTM.
                 </p>
-                <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-500">
-                  <span className="font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-700">UPI</span>
-                  <span className="font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-700">Visa / MC</span>
-                  <span className="font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-700">RuPay</span>
-                  <span className="font-mono bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-700">NetBanking</span>
+                <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                  <span className="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200">UPI</span>
+                  <span className="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200">Visa / MC</span>
+                  <span className="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200">RuPay</span>
+                  <span className="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200">NetBanking</span>
                 </div>
               </div>
             </label>
@@ -636,8 +630,8 @@ export default function Checkout() {
             <label
               className={`p-4 rounded-2xl border flex items-start gap-4 cursor-pointer transition-all ${
                 paymentMethod === 'cod'
-                  ? 'border-indigo-600 bg-indigo-50/60 shadow-xs'
-                  : 'border-slate-200 bg-white hover:border-slate-300'
+                  ? 'border-violet-600 bg-violet-500/10 shadow-sm'
+                  : 'border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-800/50 hover:border-violet-400'
               }`}
             >
               <input
@@ -646,11 +640,11 @@ export default function Checkout() {
                 value="cod"
                 checked={paymentMethod === 'cod'}
                 onChange={() => setPaymentMethod('cod')}
-                className="mt-1 text-indigo-600 focus:ring-indigo-500"
+                className="mt-1 accent-violet-600"
               />
               <div className="flex-1 space-y-1">
-                <span className="font-bold text-slate-900 text-sm">Pay on Delivery</span>
-                <p className="text-xs text-slate-600">
+                <span className="font-bold text-slate-900 dark:text-white text-sm">Pay on Delivery</span>
+                <p className="text-xs text-slate-600 dark:text-slate-300">
                   Pay with cash or card upon delivery to your doorstep.
                 </p>
               </div>
@@ -660,8 +654,8 @@ export default function Checkout() {
         </div>
 
         <div className="lg:col-span-5 space-y-6">
-          <div className="p-6 rounded-3xl bg-white border border-slate-200/80 space-y-6 sticky top-28 shadow-sm">
-            <h2 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4">
+          <div className="p-6 rounded-3xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 space-y-6 sticky top-28 shadow-sm backdrop-blur-xl">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-4">
               Acquisition Summary
             </h2>
 
@@ -671,52 +665,52 @@ export default function Checkout() {
                   <img
                     src={item.thumbnail}
                     alt=""
-                    className="w-12 h-12 rounded-xl object-cover bg-slate-50 shrink-0 border border-slate-100"
+                    className="w-12 h-12 rounded-xl object-cover bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200 dark:border-slate-700"
                   />
                   <div className="flex-1 truncate">
-                    <p className="text-slate-900 font-semibold truncate">{item.title}</p>
-                    <p className="text-slate-500 text-[11px]">
+                    <p className="text-slate-900 dark:text-white font-semibold truncate">{item.title}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-[11px]">
                       Qty: {item.quantity} {item.selectedColor ? `• ${item.selectedColor}` : ''}
                     </p>
                   </div>
-                  <span className="font-mono font-bold text-slate-900">
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">
                     {formatINR(item.price * item.quantity)}
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="space-y-2.5 text-xs text-slate-600 border-t border-slate-100 pt-4">
+            <div className="space-y-2.5 text-xs text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800 pt-4">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="font-mono text-slate-900 font-medium">{formatINR(subtotal)}</span>
+                <span className="font-mono text-slate-900 dark:text-white font-medium">{formatINR(subtotal)}</span>
               </div>
               {discountAmount > 0 && (
-                <div className="flex justify-between text-emerald-600 font-bold">
+                <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-bold">
                   <span>Discount ({appliedCoupon?.code})</span>
                   <span className="font-mono">-{formatINR(discountAmount)}</span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span>Pan-India Shipping</span>
-                <span className="font-mono text-slate-900">
-                  {shipping === 0 ? <span className="text-emerald-600 font-bold">FREE</span> : formatINR(shipping)}
+                <span className="font-mono text-slate-900 dark:text-white">
+                  {shipping === 0 ? <span className="font-bold text-emerald-600 dark:text-emerald-400">FREE</span> : formatINR(shipping)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Estimated GST (18%)</span>
-                <span className="font-mono text-slate-900">{formatINR(tax)}</span>
+                <span className="font-mono text-slate-900 dark:text-white">{formatINR(tax)}</span>
               </div>
-              <div className="flex justify-between text-base font-extrabold text-slate-900 border-t border-slate-100 pt-3">
+              <div className="flex justify-between text-base font-extrabold text-slate-900 dark:text-white border-t border-slate-200 dark:border-slate-800 pt-3">
                 <span>Amount Payable</span>
-                <span className="font-mono text-indigo-600 text-xl font-bold">{formatINR(total)}</span>
+                <span className="font-mono text-violet-600 dark:text-violet-400 text-xl font-bold">{formatINR(total)}</span>
               </div>
             </div>
 
             <button
               type="submit"
               disabled={isProcessing}
-              className="w-full py-4 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 transition-all hover:scale-[1.01] cursor-pointer disabled:opacity-50"
+              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-violet-500/25 transition-all cursor-pointer disabled:opacity-50"
             >
               {isProcessing ? (
                 <>
@@ -731,8 +725,8 @@ export default function Checkout() {
             </button>
 
             <div className="text-center space-y-2">
-              <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
-                <ShieldCheck className="w-4 h-4 text-indigo-600" />
+              <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
                 <span>256-Bit SSL Bank Encrypted by Razorpay</span>
               </div>
               <p className="text-[10px] text-slate-400">

@@ -74,83 +74,87 @@ export default function Home() {
         });
 
   return (
-    <div className="space-y-24 text-slate-900">
-      <section className="relative overflow-hidden pt-10 sm:pt-16 pb-20">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-tr from-indigo-500/15 via-purple-500/10 to-pink-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+    <div className="space-y-24 text-slate-900 dark:text-slate-100 bg-slate-50/50 dark:bg-[#090D1A] min-h-screen relative overflow-hidden transition-colors duration-200">
+      {/* Background ambient lighting */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[650px] pointer-events-none overflow-hidden -z-10">
+        <div className="absolute -top-32 left-1/4 w-[500px] h-[500px] bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-[140px] animate-pulse-glow" />
+        <div className="absolute top-20 right-1/4 w-[450px] h-[450px] bg-violet-500/10 dark:bg-violet-600/15 rounded-full blur-[140px]" />
+      </div>
 
+      <section className="relative overflow-hidden pt-10 sm:pt-16 pb-20 border-b border-slate-200/80 dark:border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             <div className="lg:col-span-7 space-y-8 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold">
-                <Sparkles className="w-4 h-4 text-indigo-600" />
-                <span>The Spring/Summer 2026 Collective is Live</span>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-700 dark:text-indigo-300 text-xs font-bold shadow-inner">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                <span>The 2026 Collection is Live</span>
               </div>
 
-              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold text-slate-900 tracking-tight leading-[1.08] font-display">
+              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.08] font-display">
                 Pure Craftsmanship.{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+                <span className="block bg-gradient-to-r from-violet-600 via-indigo-600 to-amber-500 dark:from-indigo-300 dark:via-violet-300 dark:to-amber-200 bg-clip-text text-transparent">
                   Unrivaled Precision.
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                Discover exceptional electronics, Swiss automatic chronographs, and Italian haute couture. Sourced for those who demand nothing less than perfection.
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                Discover exceptional electronics, Swiss automatic chronographs, and curated artisanal pieces. Sourced for those who demand nothing less than perfection.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
                 <Link
                   to="/products"
-                  className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-base shadow-xl shadow-indigo-600/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-base shadow-xl shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   Shop Now <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link
                   to="/products"
-                  className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-semibold text-base border border-slate-200 flex items-center justify-center gap-2 transition-all shadow-xs"
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/90 hover:bg-slate-100 dark:bg-slate-900/80 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white font-semibold text-base border border-slate-200 dark:border-slate-700/80 backdrop-blur-md flex items-center justify-center gap-2 transition-all shadow-xs"
                 >
                   Explore Drops
                 </Link>
               </div>
 
-              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-slate-200 max-w-md mx-auto lg:mx-0">
+              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-slate-200 dark:border-slate-800 max-w-md mx-auto lg:mx-0">
                 <div>
-                  <div className="text-2xl font-bold text-slate-900 font-mono">18k+</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Discerning Clients</div>
+                  <div className="text-2xl font-bold text-slate-900 dark:text-white font-mono">18k+</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Discerning Clients</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-slate-900 font-mono">100%</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Verified Genuine</div>
+                  <div className="text-2xl font-bold text-slate-900 dark:text-white font-mono">100%</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Verified Genuine</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-slate-900 font-mono">4.95 ★</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Trustpilot Score</div>
+                  <div className="text-2xl font-bold text-amber-500 dark:text-amber-300 font-mono">4.95 ★</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Trustpilot Score</div>
                 </div>
               </div>
             </div>
 
             <div className="lg:col-span-5 relative">
-              <div className="relative mx-auto max-w-md rounded-3xl overflow-hidden bg-white border border-slate-200 p-3 shadow-xl">
-                <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-slate-50">
+              <div className="relative mx-auto max-w-md rounded-2xl overflow-hidden bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 p-2.5 shadow-2xl shadow-indigo-500/10 dark:shadow-indigo-950/40 backdrop-blur-xl">
+                <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-950">
                   <img
                     src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=80"
                     alt="Chronos Luminary Ceramic Watch"
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-cover object-center brightness-95 hover:brightness-100 transition-all duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 dark:from-[#090D1A] via-transparent to-transparent opacity-80" />
                   
-                  <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-white/95 border border-slate-200 backdrop-blur-xl shadow-xl">
+                  <div className="absolute bottom-5 left-5 right-5 p-4 rounded-xl bg-white/95 dark:bg-slate-950/90 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md shadow-xl">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-600">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
                           Featured Drop
                         </span>
-                        <h3 className="text-sm font-bold text-slate-900">Chronos Luminary Obsidian</h3>
-                        <p className="text-xs text-slate-500 font-mono mt-0.5 font-semibold">₹74,999</p>
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">Chronos Luminary Obsidian</h3>
+                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono mt-0.5 font-bold">₹74,999</p>
                       </div>
                       <Link
                         to="/products"
-                        className="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors cursor-pointer"
+                        className="p-2.5 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
                       >
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -165,41 +169,41 @@ export default function Home() {
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border border-indigo-200 p-8 sm:p-12 relative overflow-hidden shadow-xs">
+        <div className="rounded-3xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-indigo-500/10 dark:from-amber-950/30 dark:via-slate-900/80 dark:to-indigo-950/40 border border-amber-500/25 p-8 sm:p-12 relative overflow-hidden shadow-xl shadow-amber-500/5 backdrop-blur-sm">
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="space-y-3 text-center lg:text-left">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold">
-                <Flame className="w-4 h-4 text-rose-600" />
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 text-xs font-extrabold shadow-md shadow-amber-500/20">
+                <Flame className="w-4 h-4 text-slate-950 fill-slate-950" />
                 <span>LIMITED TIME FLASH EVENT</span>
               </div>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
                 Save Up To 30% Off Selected Atelier Pieces
               </h2>
-              <p className="text-sm text-slate-600 max-w-lg">
-                Use code <span className="font-mono font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded border border-indigo-200">AURA10</span> at checkout for an extra 10% instant rebate.
+              <p className="text-sm text-slate-600 dark:text-slate-300 max-w-lg">
+                Use code <span className="font-mono font-bold text-amber-600 dark:text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30">AURA10</span> at checkout for an extra 10% instant rebate.
               </p>
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
-              <div className="text-center p-3 rounded-2xl bg-white border border-slate-200 min-w-16 shadow-xs">
-                <span className="block text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
+              <div className="text-center p-3 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 min-w-16 shadow-lg">
+                <span className="block text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-300 font-mono">
                   {String(timeLeft.hours).padStart(2, '0')}
                 </span>
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Hours</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Hours</span>
               </div>
-              <span className="text-xl font-bold text-slate-400">:</span>
-              <div className="text-center p-3 rounded-2xl bg-white border border-slate-200 min-w-16 shadow-xs">
-                <span className="block text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
+              <span className="text-xl font-bold text-amber-500 dark:text-amber-400">:</span>
+              <div className="text-center p-3 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 min-w-16 shadow-lg">
+                <span className="block text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-300 font-mono">
                   {String(timeLeft.minutes).padStart(2, '0')}
                 </span>
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Mins</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Mins</span>
               </div>
-              <span className="text-xl font-bold text-slate-400">:</span>
-              <div className="text-center p-3 rounded-2xl bg-white border border-slate-200 min-w-16 shadow-xs">
-                <span className="block text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono">
+              <span className="text-xl font-bold text-amber-500 dark:text-amber-400">:</span>
+              <div className="text-center p-3 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 min-w-16 shadow-lg">
+                <span className="block text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-300 font-mono">
                   {String(timeLeft.seconds).padStart(2, '0')}
                 </span>
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Secs</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Secs</span>
               </div>
             </div>
           </div>
@@ -209,16 +213,16 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
+            <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
               Curated Domains
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">
               Browse by Department
             </h2>
           </div>
           <Link
             to="/products"
-            className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5 transition-colors"
+            className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 flex items-center gap-1.5 transition-colors"
           >
             All Categories <ArrowRight className="w-4 h-4" />
           </Link>
@@ -233,20 +237,20 @@ export default function Home() {
               <Link
                 key={cat.id || name}
                 to={`/products?category=${encodeURIComponent(name)}`}
-                className="group relative rounded-3xl overflow-hidden aspect-[4/5] bg-slate-100 border border-slate-200 hover:border-indigo-500 transition-all duration-300 shadow-md"
+                className="group relative rounded-2xl overflow-hidden aspect-[4/5] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/60 hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300"
               >
                 <img
                   src={img}
                   alt={name}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-95"
+                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-black/40 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
-                  <h3 className="text-lg font-bold text-white group-hover:text-indigo-200 transition-colors">
+                  <h3 className="text-lg font-bold text-white transition-colors">
                     {name}
                   </h3>
                   <p className="text-xs text-slate-300 mt-1 line-clamp-2">{desc}</p>
-                  <div className="mt-3 flex items-center gap-1 text-xs font-semibold text-indigo-300">
+                  <div className="mt-3 flex items-center gap-1 text-xs font-semibold text-indigo-300 group-hover:text-white">
                     <span>Explore domain</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -260,10 +264,10 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
+            <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
               Hand-Selected Items
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">
               Trending Releases
             </h2>
           </div>
@@ -281,8 +285,8 @@ export default function Home() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === tab.id
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-700 shadow-xs'
                 }`}
               >
                 {tab.label}
@@ -294,10 +298,10 @@ export default function Home() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="rounded-2xl bg-white border border-slate-200 p-4 animate-pulse space-y-4">
-                <div className="aspect-square bg-slate-100 rounded-xl" />
-                <div className="h-4 bg-slate-100 rounded w-2/3" />
-                <div className="h-4 bg-slate-100 rounded w-1/3" />
+              <div key={i} className="rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 p-4 animate-pulse space-y-4 shadow-sm">
+                <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-xl" />
+                <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-2/3" />
+                <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/3" />
               </div>
             ))}
           </div>
