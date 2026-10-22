@@ -1,29 +1,25 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  toggleWishlist as toggleWishlistAction,
+  clearWishlist as clearWishlistAction,
+  selectWishlist,
+  selectWishlistCount,
+} from '../store/slices/wishlistSlice';
 
 const WishlistContext = createContext(null);
 
 export function WishlistProvider({ children }) {
-  const [wishlist, setWishlist] = useState(() => {
-    try {
-      const saved = localStorage.getItem('aura_wishlist_items');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem('aura_wishlist_items', JSON.stringify(wishlist));
-  }, [wishlist]);
+  const dispatch = useDispatch();
+  const wishlist = useSelector(selectWishlist);
+  const wishlistCount = useSelector(selectWishlistCount);
 
   const toggleWishlist = (product) => {
-    setWishlist((prev) => {
-      const exists = prev.some((item) => item.id === product.id);
-      if (exists) {
-        return prev.filter((item) => item.id !== product.id);
-      }
-      return [...prev, product];
-    });
+    dispatch(toggleWishlistAction(product));
+  };
+
+  const clearWishlist = () => {
+    dispatch(clearWishlistAction());
   };
 
   const isInWishlist = (productId) => {
@@ -34,8 +30,9 @@ export function WishlistProvider({ children }) {
     <WishlistContext.Provider
       value={{
         wishlist,
-        wishlistCount: wishlist.length,
+        wishlistCount,
         toggleWishlist,
+        clearWishlist,
         isInWishlist,
       }}
     >

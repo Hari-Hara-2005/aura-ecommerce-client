@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { ClerkProvider, useUser, useClerk, SignedIn, SignedOut, UserButton, SignIn, SignUp } from '@clerk/clerk-react';
 import { joinCustomerRoom } from '../services/socket';
+import { loginDemo as loginDemoAction, logoutDemo as logoutDemoAction } from '../store/slices/authSlice';
 
 const AuthContext = createContext(null);
 
@@ -16,6 +18,8 @@ function FallbackAuthProvider({ children }) {
       return null;
     }
   });
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (demoUser?.id) {
@@ -34,11 +38,13 @@ function FallbackAuthProvider({ children }) {
     };
     setDemoUser(mock);
     localStorage.setItem('aura_demo_user', JSON.stringify(mock));
+    dispatch(loginDemoAction(role));
   };
 
   const demoSignOut = () => {
     setDemoUser(null);
     localStorage.removeItem('aura_demo_user');
+    dispatch(logoutDemoAction());
   };
 
   const value = {
@@ -74,6 +80,8 @@ function ClerkBridgeProvider({ children }) {
     }
   }, [activeUser?.id]);
 
+  const dispatch = useDispatch();
+
   const loginDemo = (role = 'buyer', customData = {}) => {
     const defaultEmail = role === 'buyer' ? 'alex.morgan@example.com' : 'jordan.taylor@example.com';
     const defaultName = role === 'buyer' ? 'Alex Morgan' : 'Jordan Taylor';
@@ -92,11 +100,13 @@ function ClerkBridgeProvider({ children }) {
     };
     setLocalDemoUser(mock);
     localStorage.setItem('aura_demo_user', JSON.stringify(mock));
+    dispatch(loginDemoAction(role));
   };
 
   const handleSignOut = async () => {
     setLocalDemoUser(null);
     localStorage.removeItem('aura_demo_user');
+    dispatch(logoutDemoAction());
     if (isClerkSignedIn && clerk?.signOut) {
       try {
         await clerk.signOut();
